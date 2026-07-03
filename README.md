@@ -41,8 +41,6 @@ TaskMatrix addresses this challenge by providing a unified platform where projec
 
 # Technology Stack
 
-# Technology Stack
-
 The project will be developed using the following technology stack to ensure a scalable, secure, and maintainable application.
 
 | Category                      | Technologies                                        | Purpose                                                            |
@@ -129,8 +127,6 @@ The initial version of TaskMatrix focuses on the essential functionality require
 
 # Development Roadmap
 
-# Development Roadmap
-
 ## Sprint 13 – Planning & Architecture
 
 Complete project planning by preparing the Product Requirements Document (PRD), designing UI/UX wireframes, creating the database architecture, and setting up the project repository.
@@ -185,7 +181,7 @@ TaskMatrix is planned as a scalable application. After the MVP is completed, fut
 
 ---
 
-# Developer
+## Developer
 
 **Lanka Lakshmi Pavani**
 
