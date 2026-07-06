@@ -155,7 +155,7 @@ The user interface will be designed in Figma before implementation begins to est
 
 **Figma Link**
 
-*To be added after the wireframes are completed.*
+[View TaskMatrix Figma Wireframes](https://www.figma.com/design/duYYYC44hLe8g8fxEoCKyF/TaskMatrix---UI-Wireframes?node-id=0-1&t=omx7pGYZvPgpeuP8-1)
 
 ---
 
@@ -171,7 +171,9 @@ The database structure will be planned using an Entity Relationship Diagram (ERD
 
 **ER Diagram**
 
-*To be added after completing the database design.*
+The following Entity Relationship Diagram illustrates the database structure planned for TaskMatrix.
+
+![TaskMatrix ER Diagram](image-2.png)
 
 ---
 
