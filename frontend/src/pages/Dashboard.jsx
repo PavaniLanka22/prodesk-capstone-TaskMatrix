@@ -1,37 +1,53 @@
+import { useNavigate } from "react-router-dom";
+
 import Navbar from "../components/Navbar";
 import RecentTasks from "../components/RecentTasks";
 import Sidebar from "../components/Sidebar";
 import StatsCard from "../components/StatsCard";
 import UpcomingDeadlines from "../components/UpcomingDeadlines";
+
 import {
+    MdAccessTime,
+    MdDoneAll,
     MdFolder,
     MdTaskAlt,
-    MdDoneAll,
-    MdAccessTime,
 } from "react-icons/md";
-
 
 import "../styles/dashboard.css";
 
 function Dashboard() {
+
+    const navigate = useNavigate();
+
     const user = JSON.parse(localStorage.getItem("user"));
 
-const hour = new Date().getHours();
+    const hour = new Date().getHours();
 
-let greeting = "Good Evening";
+    let greeting = "Good Evening";
 
-if (hour < 12) {
-    greeting = "Good Morning";
-} else if (hour < 17) {
-    greeting = "Good Afternoon";
-}
+    if (hour < 12) {
 
-const today = new Date().toLocaleDateString("en-IN", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-});
+        greeting = "Good Morning";
+
+    }
+
+    else if (hour < 17) {
+
+        greeting = "Good Afternoon";
+
+    }
+
+    const today = new Date().toLocaleDateString("en-IN", {
+
+        weekday: "long",
+
+        month: "long",
+
+        day: "numeric",
+
+        year: "numeric",
+
+    });
 
     return (
 
@@ -47,22 +63,34 @@ const today = new Date().toLocaleDateString("en-IN", {
 
                     <div className="hero-text">
 
-    <h1>
-        {greeting}, {user?.name?.split(" ")[0]} 👋
-    </h1>
+                        <h1>
 
-    <p className="hero-subtitle">
-        Welcome back to TaskMatrix.
-        Here's your workspace overview.
-    </p>
+                            {greeting}, {user?.name?.split(" ")[0]} 👋
 
-    <span className="hero-date">
-        {today}
-    </span>
+                        </h1>
 
-</div>
+                        <p className="hero-subtitle">
 
-                    <button className="new-project">
+                            Welcome back to TaskMatrix.
+                            Here's your workspace overview.
+
+                        </p>
+
+                        <span className="hero-date">
+
+                            {today}
+
+                        </span>
+
+                    </div>
+
+                    <button
+
+                        className="new-project"
+
+                        onClick={() => navigate("/projects")}
+
+                    >
 
                         + New Project
 
@@ -72,47 +100,71 @@ const today = new Date().toLocaleDateString("en-IN", {
 
                 <div className="stats-grid">
 
-    <StatsCard
-        icon={<MdFolder />}
-        title="Projects"
-        value="12"
-        trend="↑ 12% this week"
-        trendColor="green"
-    />
+                    <StatsCard
 
-    <StatsCard
-        icon={<MdTaskAlt />}
-        title="Tasks"
-        value="48"
-        trend="18 active tasks"
-        trendColor="blue"
-    />
+                        icon={<MdFolder />}
 
-    <StatsCard
-        icon={<MdDoneAll />}
-        title="Completed"
-        value="31"
-        trend="↑ 8% this week"
-        trendColor="green"
-    />
+                        title="Projects"
 
-    <StatsCard
-        icon={<MdAccessTime />}
-        title="Pending"
-        value="17"
-        trend="3 overdue tasks"
-        trendColor="orange"
-    />
+                        value="12"
 
-</div>
+                        trend="↑ 12% this week"
+
+                        trendColor="green"
+
+                    />
+
+                    <StatsCard
+
+                        icon={<MdTaskAlt />}
+
+                        title="Tasks"
+
+                        value="48"
+
+                        trend="18 active tasks"
+
+                        trendColor="blue"
+
+                    />
+
+                    <StatsCard
+
+                        icon={<MdDoneAll />}
+
+                        title="Completed"
+
+                        value="31"
+
+                        trend="↑ 8% this week"
+
+                        trendColor="green"
+
+                    />
+
+                    <StatsCard
+
+                        icon={<MdAccessTime />}
+
+                        title="Pending"
+
+                        value="17"
+
+                        trend="3 overdue tasks"
+
+                        trendColor="orange"
+
+                    />
+
+                </div>
 
                 <div className="bottom-grid">
 
-    <RecentTasks />
+                    <RecentTasks />
 
-    <UpcomingDeadlines />
+                    <UpcomingDeadlines />
 
-</div>
+                </div>
 
             </div>
 
