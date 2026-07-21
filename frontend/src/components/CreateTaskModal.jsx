@@ -14,13 +14,9 @@ import { toast } from "react-toastify";
 
 
 function CreateTaskModal({
-
     open,
-
     onClose,
-
     onTaskCreated
-
 }) {
 
     const token = localStorage.getItem("token");
@@ -70,16 +66,13 @@ function CreateTaskModal({
                 `${API_URL}/api/projects`,
 
                 {
-
                     headers: {
-
                         Authorization: `Bearer ${token}`
-
                     }
-
                 }
 
             );
+
 
             setProjects(
 
@@ -98,6 +91,7 @@ function CreateTaskModal({
                 error.response?.data || error.message
 
             );
+
 
             toast.error(
 
@@ -144,13 +138,9 @@ function CreateTaskModal({
                 task,
 
                 {
-
                     headers: {
-
                         Authorization: `Bearer ${token}`
-
                     }
-
                 }
 
             );
@@ -193,6 +183,15 @@ function CreateTaskModal({
 
         catch (error) {
 
+            console.log(
+
+                "Create task error:",
+
+                error.response?.data || error.message
+
+            );
+
+
             toast.error(
 
                 error.response?.data?.message ||
@@ -234,6 +233,10 @@ function CreateTaskModal({
 
             >
 
+                {/* ==================================================
+                    MODAL HEADER
+                ================================================== */}
+
                 <div className="task-modal-header">
 
                     <div className="task-modal-icon">
@@ -242,7 +245,8 @@ function CreateTaskModal({
 
                     </div>
 
-                    <div>
+
+                    <div className="task-modal-title">
 
                         <h2>
 
@@ -261,6 +265,10 @@ function CreateTaskModal({
                 </div>
 
 
+                {/* ==================================================
+                    FORM
+                ================================================== */}
+
                 <form
 
                     className="task-form"
@@ -269,6 +277,9 @@ function CreateTaskModal({
 
                 >
 
+                    {/* ==================================================
+                        TASK TITLE
+                    ================================================== */}
 
                     <div className="form-group">
 
@@ -302,6 +313,10 @@ function CreateTaskModal({
 
                     </div>
 
+
+                    {/* ==================================================
+                        PROJECT
+                    ================================================== */}
 
                     <div className="form-group">
 
@@ -365,6 +380,10 @@ function CreateTaskModal({
                     </div>
 
 
+                    {/* ==================================================
+                        DESCRIPTION - FULL WIDTH
+                    ================================================== */}
+
                     <div className="form-group full-width">
 
                         <label>
@@ -379,8 +398,6 @@ function CreateTaskModal({
 
                             <textarea
 
-                                rows="5"
-
                                 name="description"
 
                                 value={task.description}
@@ -389,12 +406,18 @@ function CreateTaskModal({
 
                                 placeholder="Describe the task..."
 
+                                rows="5"
+
                             />
 
                         </div>
 
                     </div>
 
+
+                    {/* ==================================================
+                        DUE DATE
+                    ================================================== */}
 
                     <div className="form-group">
 
@@ -425,6 +448,10 @@ function CreateTaskModal({
                     </div>
 
 
+                    {/* ==================================================
+                        PRIORITY
+                    ================================================== */}
+
                     <div className="form-group">
 
                         <label>
@@ -447,19 +474,19 @@ function CreateTaskModal({
 
                             >
 
-                                <option>
+                                <option value="Low">
 
                                     Low
 
                                 </option>
 
-                                <option>
+                                <option value="Medium">
 
                                     Medium
 
                                 </option>
 
-                                <option>
+                                <option value="High">
 
                                     High
 
@@ -472,7 +499,11 @@ function CreateTaskModal({
                     </div>
 
 
-                    <div className="form-group">
+                    {/* ==================================================
+                        STATUS - FULL WIDTH
+                    ================================================== */}
+
+                    <div className="form-group status-field">
 
                         <label>
 
@@ -494,25 +525,25 @@ function CreateTaskModal({
 
                             >
 
-                                <option>
+                                <option value="Todo">
 
                                     Todo
 
                                 </option>
 
-                                <option>
+                                <option value="In Progress">
 
                                     In Progress
 
                                 </option>
 
-                                <option>
+                                <option value="Review">
 
                                     Review
 
                                 </option>
 
-                                <option>
+                                <option value="Completed">
 
                                     Completed
 
@@ -525,8 +556,9 @@ function CreateTaskModal({
                     </div>
 
 
-                    <div></div>
-
+                    {/* ==================================================
+                        FOOTER
+                    ================================================== */}
 
                     <div className="task-modal-footer">
 
@@ -559,20 +591,15 @@ function CreateTaskModal({
 
                                 loading
 
-                                    ?
+                                    ? "Creating..."
 
-                                    "Creating..."
-
-                                    :
-
-                                    "Create Task"
+                                    : "Create Task"
 
                             }
 
                         </button>
 
                     </div>
-
 
                 </form>
 
