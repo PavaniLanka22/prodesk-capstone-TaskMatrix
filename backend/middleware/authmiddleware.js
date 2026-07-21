@@ -6,6 +6,8 @@ const authMiddleware = (req, res, next) => {
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
 
+        console.log("❌ Authorization header missing");
+
         return res.status(401).json({
 
             success: false,
@@ -28,6 +30,13 @@ const authMiddleware = (req, res, next) => {
 
         );
 
+        console.log("\n==============================");
+        console.log("✅ JWT VERIFIED");
+        console.log("User ID :", decoded.id);
+        console.log("Name    :", decoded.name);
+        console.log("Email   :", decoded.email);
+        console.log("==============================\n");
+
         req.user = decoded;
 
         next();
@@ -35,6 +44,11 @@ const authMiddleware = (req, res, next) => {
     }
 
     catch (error) {
+
+        console.log("\n==============================");
+        console.log("❌ JWT VERIFICATION FAILED");
+        console.log(error.message);
+        console.log("==============================\n");
 
         return res.status(401).json({
 

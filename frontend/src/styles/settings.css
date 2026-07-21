@@ -424,7 +424,15 @@
 
 .settings-actions{
 
-    margin-top:15px;
+    display:flex;
+
+    gap:16px;
+
+    margin-top:30px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
 
 }
 

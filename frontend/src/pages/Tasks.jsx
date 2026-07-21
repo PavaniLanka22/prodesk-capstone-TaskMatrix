@@ -572,21 +572,23 @@ function Tasks() {
 
             <DeleteTaskModal
 
-                open={showDeleteModal}
+    open={showDeleteModal}
 
-                task={selectedTask}
+    task={selectedTask}
 
-                onClose={() => {
+    tasks={tasks}
 
-                    setShowDeleteModal(false);
+    setTasks={setTasks}
 
-                    setSelectedTask(null);
+    onClose={() => {
 
-                }}
+        setShowDeleteModal(false);
 
-                onDeleted={fetchTasks}
+        setSelectedTask(null);
 
-            />
+    }}
+
+/>
 
         </div>
 

@@ -1,3 +1,4 @@
+const Task = require("../models/Task");
 const taskService = require("../services/taskService");
 
 const createTask = async (req, res) => {
@@ -76,15 +77,9 @@ const getTask = async (req, res) => {
 
     try {
 
-        const task = await taskService.getTaskById(
+        const existingTask = await Task.findById(req.params.id);
 
-            req.params.id,
-
-            req.user.id
-
-        );
-
-        if (!task) {
+        if (!existingTask) {
 
             return res.status(404).json({
 
@@ -96,7 +91,27 @@ const getTask = async (req, res) => {
 
         }
 
-        res.json({
+        if (existingTask.user.toString() !== req.user.id) {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message: "Forbidden"
+
+            });
+
+        }
+
+        const task = await taskService.getTaskById(
+
+            req.params.id,
+
+            req.user.id
+
+        );
+
+        res.status(200).json({
 
             success: true,
 
@@ -124,17 +139,9 @@ const updateTask = async (req, res) => {
 
     try {
 
-        const updatedTask = await taskService.updateTask(
+        const existingTask = await Task.findById(req.params.id);
 
-            req.params.id,
-
-            req.user.id,
-
-            req.body
-
-        );
-
-        if (!updatedTask) {
+        if (!existingTask) {
 
             return res.status(404).json({
 
@@ -146,6 +153,28 @@ const updateTask = async (req, res) => {
 
         }
 
+        if (existingTask.user.toString() !== req.user.id) {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message: "Forbidden"
+
+            });
+
+        }
+
+        const updatedTask = await taskService.updateTask(
+
+            req.params.id,
+
+            req.user.id,
+
+            req.body
+
+        );
+
         const populatedTask = await updatedTask.populate(
 
             "project",
@@ -154,7 +183,7 @@ const updateTask = async (req, res) => {
 
         );
 
-        res.json({
+        res.status(200).json({
 
             success: true,
 
@@ -184,15 +213,9 @@ const deleteTask = async (req, res) => {
 
     try {
 
-        const deletedTask = await taskService.deleteTask(
+        const existingTask = await Task.findById(req.params.id);
 
-            req.params.id,
-
-            req.user.id
-
-        );
-
-        if (!deletedTask) {
+        if (!existingTask) {
 
             return res.status(404).json({
 
@@ -204,7 +227,27 @@ const deleteTask = async (req, res) => {
 
         }
 
-        res.json({
+        if (existingTask.user.toString() !== req.user.id) {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message: "Forbidden"
+
+            });
+
+        }
+
+        await taskService.deleteTask(
+
+            req.params.id,
+
+            req.user.id
+
+        );
+
+        res.status(200).json({
 
             success: true,
 

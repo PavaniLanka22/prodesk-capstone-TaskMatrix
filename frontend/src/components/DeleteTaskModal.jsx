@@ -8,9 +8,11 @@ function DeleteTaskModal({
 
     task,
 
-    onClose,
+    tasks,
 
-    onDeleted
+    setTasks,
+
+    onClose
 
 }) {
 
@@ -19,6 +21,23 @@ function DeleteTaskModal({
     if (!open || !task) return null;
 
     const handleDelete = async () => {
+
+        // Backup current tasks
+        const previousTasks = [...tasks];
+
+        // Optimistically remove task immediately
+        setTasks(
+
+            tasks.filter(
+
+                (t) => t._id !== task._id
+
+            )
+
+        );
+
+        // Close modal immediately
+        onClose();
 
         try {
 
@@ -40,13 +59,12 @@ function DeleteTaskModal({
 
             toast.success("Task deleted successfully");
 
-            onDeleted();
-
-            onClose();
-
         }
 
         catch (error) {
+
+            // Restore old data if API fails
+            setTasks(previousTasks);
 
             toast.error(
 

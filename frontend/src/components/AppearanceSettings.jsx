@@ -1,11 +1,11 @@
+import axios from "axios";
 import { useState } from "react";
 
 import {
     FiMonitor,
     FiMoon,
-    FiSun,
-    FiSidebar,
-    FiSave
+    FiSave,
+    FiSun
 } from "react-icons/fi";
 
 import { toast } from "react-toastify";
@@ -37,17 +37,29 @@ function AppearanceSettings() {
 
     const handleChange = (e) => {
 
-        const { name, value, checked, type } = e.target;
+        const {
+
+            name,
+
+            value,
+
+            checked,
+
+            type
+
+        } = e.target;
 
         setSettings({
 
             ...settings,
 
-            [name]: type === "checkbox"
+            [name]:
 
-                ? checked
+                type === "checkbox"
 
-                : value
+                    ? checked
+
+                    : value
 
         });
 
@@ -55,7 +67,53 @@ function AppearanceSettings() {
 
     const saveAppearance = () => {
 
-        toast.success("Appearance updated successfully.");
+        toast.success(
+
+            "Appearance updated successfully."
+
+        );
+
+    };
+
+    const upgradeToPro = async () => {
+
+        try {
+
+            const token = localStorage.getItem("token");
+
+            const response = await axios.post(
+
+                "http://localhost:5000/api/payment/create-checkout-session",
+
+                {},
+
+                {
+
+                    headers: {
+
+                        Authorization: `Bearer ${token}`
+
+                    }
+
+                }
+
+            );
+
+            window.location.href = response.data.url;
+
+        }
+
+        catch (error) {
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Unable to start Stripe Checkout."
+
+            );
+
+        }
 
     };
 
@@ -101,23 +159,23 @@ function AppearanceSettings() {
 
                                 settings.theme === "Light"
 
-                                ?
+                                    ?
 
-                                "theme-card active"
+                                    "theme-card active"
 
-                                :
+                                    :
 
-                                "theme-card"
+                                    "theme-card"
 
                             }
 
-                            onClick={()=>
+                            onClick={() =>
 
                                 setSettings({
 
                                     ...settings,
 
-                                    theme:"Light"
+                                    theme: "Light"
 
                                 })
 
@@ -125,7 +183,7 @@ function AppearanceSettings() {
 
                         >
 
-                            <FiSun size={24}/>
+                            <FiSun size={24} />
 
                             <span>
 
@@ -141,23 +199,23 @@ function AppearanceSettings() {
 
                                 settings.theme === "Dark"
 
-                                ?
+                                    ?
 
-                                "theme-card active"
+                                    "theme-card active"
 
-                                :
+                                    :
 
-                                "theme-card"
+                                    "theme-card"
 
                             }
 
-                            onClick={()=>
+                            onClick={() =>
 
                                 setSettings({
 
                                     ...settings,
 
-                                    theme:"Dark"
+                                    theme: "Dark"
 
                                 })
 
@@ -165,7 +223,7 @@ function AppearanceSettings() {
 
                         >
 
-                            <FiMoon size={24}/>
+                            <FiMoon size={24} />
 
                             <span>
 
@@ -181,23 +239,23 @@ function AppearanceSettings() {
 
                                 settings.theme === "System"
 
-                                ?
+                                    ?
 
-                                "theme-card active"
+                                    "theme-card active"
 
-                                :
+                                    :
 
-                                "theme-card"
+                                    "theme-card"
 
                             }
 
-                            onClick={()=>
+                            onClick={() =>
 
                                 setSettings({
 
                                     ...settings,
 
-                                    theme:"System"
+                                    theme: "System"
 
                                 })
 
@@ -205,7 +263,7 @@ function AppearanceSettings() {
 
                         >
 
-                            <FiMonitor size={24}/>
+                            <FiMonitor size={24} />
 
                             <span>
 
@@ -231,7 +289,7 @@ function AppearanceSettings() {
 
                         {
 
-                            colors.map(color=>(
+                            colors.map((color) => (
 
                                 <button
 
@@ -239,31 +297,31 @@ function AppearanceSettings() {
 
                                     className={
 
-                                        settings.accent===color
+                                        settings.accent === color
 
-                                        ?
+                                            ?
 
-                                        "color-dot active"
+                                            "color-dot active"
 
-                                        :
+                                            :
 
-                                        "color-dot"
+                                            "color-dot"
 
                                     }
 
                                     style={{
 
-                                        background:color
+                                        background: color
 
                                     }}
 
-                                    onClick={()=>
+                                    onClick={() =>
 
                                         setSettings({
 
                                             ...settings,
 
-                                            accent:color
+                                            accent: color
 
                                         })
 
@@ -321,7 +379,7 @@ function AppearanceSettings() {
 
                 </div>
 
-                <div className="settings-row">
+                                <div className="settings-row">
 
                     <div className="settings-toggle-card">
 
@@ -379,7 +437,7 @@ function AppearanceSettings() {
 
                             style={{
 
-                                background:settings.accent
+                                background: settings.accent
 
                             }}
 
@@ -413,9 +471,25 @@ function AppearanceSettings() {
 
                     >
 
-                        <FiSave/>
+                        <FiSave />
 
                         Save Appearance
+
+                    </button>
+
+                    <button
+
+                        className="save-settings-btn"
+
+                        onClick={upgradeToPro}
+
+                        style={{
+    background:"#16a34a"
+}}
+
+                    >
+
+                        Upgrade to Pro
 
                     </button>
 

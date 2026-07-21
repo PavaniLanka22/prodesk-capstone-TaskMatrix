@@ -12,6 +12,9 @@ import Kanban from "./pages/Kanban";
 import Teams from "./pages/Teams";
 import Settings from "./pages/Settings";
 
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
+
 function App() {
 
     return (
@@ -137,6 +140,38 @@ function App() {
                         <ProtectedRoute>
 
                             <Settings />
+
+                        </ProtectedRoute>
+
+                    }
+
+                />
+
+                <Route
+
+                    path="/payment-success"
+
+                    element={
+
+                        <ProtectedRoute>
+
+                            <PaymentSuccess />
+
+                        </ProtectedRoute>
+
+                    }
+
+                />
+
+                <Route
+
+                    path="/payment-cancel"
+
+                    element={
+
+                        <ProtectedRoute>
+
+                            <PaymentCancel />
 
                         </ProtectedRoute>
 
