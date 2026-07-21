@@ -8,7 +8,7 @@ const {
     deleteUser
 } = require("../controllers/userController");
 
-const protect = require("../middleware/authMiddleware");
+const protect = require("../middleware/authmiddleware");
 
 // Get all users
 router.get(
