@@ -2,21 +2,75 @@ const Project = require("../models/Project");
 
 const createProject = async (projectData) => {
 
-    const project = await Project.create(projectData);
-
-    return project;
+    return await Project.create(projectData);
 
 };
 
-const getAllProjects = async () => {
+const getAllProjects = async (userId) => {
 
-    return await Project.find().sort({ createdAt: -1 });
+    return await Project.find({
+
+        user: userId
+
+    })
+
+    .sort({
+
+        createdAt: -1
+
+    });
 
 };
 
-const deleteProject = async (id) => {
+const updateProject = async (
 
-    return await Project.findByIdAndDelete(id);
+    id,
+
+    userId,
+
+    projectData
+
+) => {
+
+    return await Project.findOneAndUpdate(
+
+        {
+
+            _id: id,
+
+            user: userId
+
+        },
+
+        projectData,
+
+        {
+
+            new: true,
+
+            runValidators: true
+
+        }
+
+    );
+
+};
+
+const deleteProject = async (
+
+    id,
+
+    userId
+
+) => {
+
+    return await Project.findOneAndDelete({
+
+        _id: id,
+
+        user: userId
+
+    });
 
 };
 
@@ -26,6 +80,8 @@ module.exports = {
 
     getAllProjects,
 
-    deleteProject,
+    updateProject,
+
+    deleteProject
 
 };

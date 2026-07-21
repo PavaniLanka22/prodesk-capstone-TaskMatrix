@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import CreateProjectModal from "../components/CreateProjectModal";
 import DeleteProjectModal from "../components/DeleteProjectModal";
+import EditProjectModal from "../components/EditProjectModal";
 import Navbar from "../components/Navbar";
 import ProjectCard from "../components/ProjectCard";
 import Sidebar from "../components/Sidebar";
-
 
 import "../styles/dashboard.css";
 
@@ -18,6 +19,8 @@ function Projects() {
 
     const [deleteModal, setDeleteModal] = useState(false);
 
+    const [editModal, setEditModal] = useState(false);
+
     const [selectedProject, setSelectedProject] = useState(null);
 
     const token = localStorage.getItem("token");
@@ -26,23 +29,21 @@ function Projects() {
 
         try {
 
-           const response = await axios.get(
+            const response = await axios.get(
 
-    "http://localhost:5000/api/projects",
+                "http://localhost:5000/api/projects",
 
-    {
+                {
 
-        headers: {
+                    headers: {
 
-            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        Authorization: `Bearer ${token}`
 
-        }
+                    }
 
-    }
+                }
 
-);
-
-setProjects(response.data.projects);
+            );
 
             setProjects(response.data.projects);
 
@@ -51,6 +52,8 @@ setProjects(response.data.projects);
         catch (error) {
 
             console.log(error);
+
+            toast.error("Failed to fetch projects.");
 
         }
 
@@ -74,45 +77,75 @@ setProjects(response.data.projects);
 
     };
 
+    const handleProjectUpdated = (updatedProject) => {
+
+        setProjects((prevProjects) =>
+
+            prevProjects.map((project) =>
+
+                project._id === updatedProject._id
+
+                    ? updatedProject
+
+                    : project
+
+            )
+
+        );
+
+    };
+
     const deleteProject = async () => {
 
         try {
 
-           axios.delete(
+            await axios.delete(
 
-    `http://localhost:5000/api/projects/${selectedProject._id}`,
+                `http://localhost:5000/api/projects/${selectedProject._id}`,
 
-    {
+                {
 
-        headers: {
+                    headers: {
 
-            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        Authorization: `Bearer ${token}`
 
-        }
+                    }
 
-    }
+                }
 
-);
+            );
 
             setProjects(
 
                 projects.filter(
 
-                    (project) => project._id !== selectedProject._id
+                    (project) =>
+
+                        project._id !== selectedProject._id
 
                 )
 
             );
 
+            const deletedProjectName = selectedProject.name;
+
             setDeleteModal(false);
 
             setSelectedProject(null);
+
+            toast.success(
+
+                `🗑️ "${deletedProjectName}" deleted successfully!`
+
+            );
 
         }
 
         catch (error) {
 
             console.log(error);
+
+            toast.error("Failed to delete project.");
 
         }
 
@@ -160,53 +193,65 @@ setProjects(response.data.projects);
 
                     {
 
-                        projects.length === 0 ?
+                        projects.length === 0
 
-                        (
+                            ?
 
-                            <p>
+                            (
 
-                                No projects found. Create your first project.
+                                <p>
 
-                            </p>
+                                    No projects found.
 
-                        )
+                                    Create your first project.
 
-                        :
+                                </p>
 
-                        (
+                            )
 
-                            projects.map((project) => (
+                            :
 
-                                <ProjectCard
+                            (
 
-                                    key={project._id}
+                                projects.map((project) => (
 
-                                    id={project._id}
+                                    <ProjectCard
 
-                                    title={project.name}
+                                        key={project._id}
 
-                                    category={project.category}
+                                        id={project._id}
 
-                                    progress={project.progress || 0}
+                                        title={project.name}
 
-                                    tasks={0}
+                                        category={project.category}
 
-                                    members={1}
+                                        progress={project.progress || 0}
 
-                                    onDelete={() => {
+                                        tasks={0}
 
-                                        setSelectedProject(project);
+                                        members={1}
 
-                                        setDeleteModal(true);
+                                        onEdit={() => {
 
-                                    }}
+                                            setSelectedProject(project);
 
-                                />
+                                            setEditModal(true);
 
-                            ))
+                                        }}
 
-                        )
+                                        onDelete={() => {
+
+                                            setSelectedProject(project);
+
+                                            setDeleteModal(true);
+
+                                        }}
+
+                                    />
+
+                                ))
+
+                            )
 
                     }
 
@@ -221,6 +266,24 @@ setProjects(response.data.projects);
                 onClose={() => setShowModal(false)}
 
                 onProjectCreated={handleProjectCreated}
+
+            />
+
+            <EditProjectModal
+
+                open={editModal}
+
+                project={selectedProject}
+
+                onClose={() => {
+
+                    setEditModal(false);
+
+                    setSelectedProject(null);
+
+                }}
+
+                onProjectUpdated={handleProjectUpdated}
 
             />
 

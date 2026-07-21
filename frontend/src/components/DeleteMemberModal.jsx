@@ -1,51 +1,77 @@
-function DeleteProjectModal({
+import {
+    FiAlertTriangle
+} from "react-icons/fi";
+
+function DeleteMemberModal({
+
     open,
+
+    member,
+
     onClose,
-    onConfirm,
-    projectName
+
+    onDelete
+
 }) {
 
-    if (!open) return null;
+    if (!open || !member) return null;
 
     return (
 
         <div
+
             className="modal-overlay"
+
             onClick={onClose}
+
         >
 
             <div
+
                 className="delete-modal"
+
                 onClick={(e) => e.stopPropagation()}
+
             >
 
                 <div className="delete-icon">
-                    🗑
+
+                    <FiAlertTriangle size={36} />
+
                 </div>
 
-                <h2>Delete Project?</h2>
+                <h2>
+
+                    Remove Team Member
+
+                </h2>
 
                 <p>
 
-                    Are you sure you want to delete
-
-                    <strong> "{projectName}" </strong>
-
-                    ?
+                    Are you sure you want to remove this member from your workspace?
 
                 </p>
 
-                <p className="delete-warning">
+                <h3>
 
-                    This action cannot be undone.
+                    {member.name}
 
-                </p>
+                </h3>
 
-                <div className="delete-actions">
+                <span>
+
+                    {member.email}
+
+                </span>
+
+                <div className="delete-buttons">
 
                     <button
+
                         className="cancel-btn"
+
                         onClick={onClose}
+
                     >
 
                         Cancel
@@ -53,11 +79,14 @@ function DeleteProjectModal({
                     </button>
 
                     <button
+
                         className="delete-btn"
-                        onClick={onConfirm}
+
+                        onClick={onDelete}
+
                     >
 
-                        Delete
+                        Remove Member
 
                     </button>
 
@@ -71,4 +100,4 @@ function DeleteProjectModal({
 
 }
 
-export default DeleteProjectModal;
+export default DeleteMemberModal;

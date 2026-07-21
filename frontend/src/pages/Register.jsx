@@ -48,13 +48,21 @@ function Register() {
 
             <div className="login-card">
 
-                <h1 className="logo">
-                    TaskMatrix
-                </h1>
+                <img
+    src="/kanban.svg"
+    alt="TaskMatrix"
+    className="logo-image"
+/>
 
-                <h2>Create Account</h2>
+<h1 className="logo-title">
+    TaskMatrix
+</h1>
 
-                <p>Start managing your projects today.</p>
+<h2>Create Account</h2>
+
+<p className="subtitle">
+    Start managing your projects today.
+</p>
 
                 <form onSubmit={handleSubmit}>
 

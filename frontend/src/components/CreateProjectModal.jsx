@@ -1,5 +1,6 @@
-import { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 function CreateProjectModal({ open, onClose, onProjectCreated }) {
 
@@ -55,11 +56,13 @@ function CreateProjectModal({ open, onClose, onProjectCreated }) {
 
             if (onProjectCreated) {
 
-                onProjectCreated(response.data.project);
+    onProjectCreated(response.data.project);
 
-            }
+}
 
-            setProject({
+toast.success("Project created successfully!");
+
+setProject({
 
                 name: "",
 

@@ -5,12 +5,43 @@ function Sidebar() {
     const location = useLocation();
 
     const menuItems = [
-        { name: "Dashboard", path: "/dashboard", icon: "🏠" },
-        { name: "Projects", path: "/projects", icon: "📁" },
-        { name: "Tasks", path: "#", icon: "✅" },
-        { name: "Kanban", path: "#", icon: "📋" },
-        { name: "Team", path: "#", icon: "👥" },
-        { name: "Settings", path: "#", icon: "⚙️" }
+
+        {
+            name: "Dashboard",
+            path: "/dashboard",
+            icon: "🏠"
+        },
+
+        {
+            name: "Projects",
+            path: "/projects",
+            icon: "📁"
+        },
+
+        {
+            name: "Tasks",
+            path: "/tasks",
+            icon: "✅"
+        },
+
+        {
+            name: "Kanban",
+            path: "/kanban",
+            icon: "📋"
+        },
+
+        {
+            name: "Team",
+            path: "/teams",
+            icon: "👥"
+        },
+
+        {
+            name: "Settings",
+            path: "/settings",
+            icon: "⚙️"
+        }
+
     ];
 
     return (
@@ -30,25 +61,37 @@ function Sidebar() {
 
             <nav>
 
-                {menuItems.map((item) => (
+                {
 
-                    <Link
-                        key={item.name}
-                        to={item.path}
-                        className={
-                            location.pathname === item.path
-                                ? "menu active"
-                                : "menu"
-                        }
-                    >
+                    menuItems.map((item) => (
 
-                        <span>{item.icon}</span>
+                        <Link
 
-                        {item.name}
+                            key={item.name}
 
-                    </Link>
+                            to={item.path}
 
-                ))}
+                            className={
+
+                                location.pathname === item.path
+
+                                    ? "menu active"
+
+                                    : "menu"
+
+                            }
+
+                        >
+
+                            <span>{item.icon}</span>
+
+                            {item.name}
+
+                        </Link>
+
+                    ))
+
+                }
 
             </nav>
 

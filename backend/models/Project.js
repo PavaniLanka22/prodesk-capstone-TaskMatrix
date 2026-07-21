@@ -33,6 +33,12 @@ const projectSchema = new mongoose.Schema(
             enum: ["Active", "Completed"],
             default: "Active",
         },
+
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
     },
     {
         timestamps: true,

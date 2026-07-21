@@ -12,9 +12,23 @@ function ProjectCard({
 
     members,
 
+    onEdit,
+
     onDelete
 
 }) {
+
+    const badgeColor =
+
+        progress >= 100
+
+            ? "#10b981"
+
+            : progress >= 60
+
+            ? "#3b82f6"
+
+            : "#f59e0b";
 
     return (
 
@@ -40,9 +54,23 @@ function ProjectCard({
 
                 </div>
 
-                <span className="project-badge">
+                <span
 
-                    Active
+                    className="project-badge"
+
+                    style={{
+
+                        background: badgeColor
+
+                    }}
+
+                >
+
+                    {progress === 100
+
+                        ? "Completed"
+
+                        : "Active"}
 
                 </span>
 
@@ -52,9 +80,17 @@ function ProjectCard({
 
                 <div className="progress-header">
 
-                    <span>Progress</span>
+                    <span>
 
-                    <span>{progress || 0}%</span>
+                        Progress
+
+                    </span>
+
+                    <span>
+
+                        {progress || 0}%
+
+                    </span>
 
                 </div>
 
@@ -104,9 +140,25 @@ function ProjectCard({
 
             <div className="project-actions">
 
-                <button className="project-btn">
+                <button
 
-                    Open Project →
+                    className="project-btn"
+
+                >
+
+                    Open →
+
+                </button>
+
+                <button
+
+                    className="edit-btn"
+
+                    onClick={onEdit}
+
+                >
+
+                    ✏ Edit
 
                 </button>
 
