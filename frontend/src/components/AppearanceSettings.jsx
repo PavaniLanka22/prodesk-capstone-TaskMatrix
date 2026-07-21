@@ -1,5 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
+
+import {
+    useState
+} from "react";
 
 import {
     FiMonitor,
@@ -8,9 +11,15 @@ import {
     FiSun
 } from "react-icons/fi";
 
-import { toast } from "react-toastify";
+import {
+    toast
+} from "react-toastify";
+
 
 function AppearanceSettings() {
+
+    const API_URL = import.meta.env.VITE_API_URL;
+
 
     const [settings, setSettings] = useState({
 
@@ -24,16 +33,23 @@ function AppearanceSettings() {
 
     });
 
+
     const colors = [
 
         "#6C63FF",
+
         "#3B82F6",
+
         "#10B981",
+
         "#F59E0B",
+
         "#EF4444",
+
         "#8B5CF6"
 
     ];
+
 
     const handleChange = (e) => {
 
@@ -49,6 +65,7 @@ function AppearanceSettings() {
 
         } = e.target;
 
+
         setSettings({
 
             ...settings,
@@ -57,13 +74,18 @@ function AppearanceSettings() {
 
                 type === "checkbox"
 
-                    ? checked
+                    ?
 
-                    : value
+                    checked
+
+                    :
+
+                    value
 
         });
 
     };
+
 
     const saveAppearance = () => {
 
@@ -75,15 +97,34 @@ function AppearanceSettings() {
 
     };
 
+
     const upgradeToPro = async () => {
 
         try {
 
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem(
+
+                "token"
+
+            );
+
+
+            if (!token) {
+
+                toast.error(
+
+                    "Please log in before upgrading."
+
+                );
+
+                return;
+
+            }
+
 
             const response = await axios.post(
 
-                "http://localhost:5000/api/payment/create-checkout-session",
+                `${API_URL}/api/payment/create-checkout-session`,
 
                 {},
 
@@ -91,7 +132,9 @@ function AppearanceSettings() {
 
                     headers: {
 
-                        Authorization: `Bearer ${token}`
+                        Authorization:
+
+                            `Bearer ${token}`
 
                     }
 
@@ -99,11 +142,37 @@ function AppearanceSettings() {
 
             );
 
-            window.location.href = response.data.url;
+
+            if (response.data?.url) {
+
+                window.location.href =
+
+                    response.data.url;
+
+            }
+
+            else {
+
+                toast.error(
+
+                    "Stripe Checkout URL was not returned."
+
+                );
+
+            }
 
         }
 
         catch (error) {
+
+            console.error(
+
+                "Stripe Checkout error:",
+
+                error
+
+            );
+
 
             toast.error(
 
@@ -116,6 +185,7 @@ function AppearanceSettings() {
         }
 
     };
+
 
     return (
 
@@ -131,6 +201,7 @@ function AppearanceSettings() {
 
                     </h2>
 
+
                     <p>
 
                         Personalize your workspace.
@@ -141,6 +212,7 @@ function AppearanceSettings() {
 
             </div>
 
+
             <div className="settings-form">
 
                 <div className="settings-group">
@@ -150,6 +222,7 @@ function AppearanceSettings() {
                         Theme
 
                     </label>
+
 
                     <div className="theme-selector">
 
@@ -185,6 +258,7 @@ function AppearanceSettings() {
 
                             <FiSun size={24} />
 
+
                             <span>
 
                                 Light
@@ -192,6 +266,7 @@ function AppearanceSettings() {
                             </span>
 
                         </button>
+
 
                         <button
 
@@ -225,6 +300,7 @@ function AppearanceSettings() {
 
                             <FiMoon size={24} />
 
+
                             <span>
 
                                 Dark
@@ -232,6 +308,7 @@ function AppearanceSettings() {
                             </span>
 
                         </button>
+
 
                         <button
 
@@ -265,6 +342,7 @@ function AppearanceSettings() {
 
                             <FiMonitor size={24} />
 
+
                             <span>
 
                                 System
@@ -277,6 +355,7 @@ function AppearanceSettings() {
 
                 </div>
 
+
                 <div className="settings-group">
 
                     <label>
@@ -285,57 +364,67 @@ function AppearanceSettings() {
 
                     </label>
 
+
                     <div className="color-picker">
 
                         {
 
-                            colors.map((color) => (
+                            colors.map(
 
-                                <button
+                                (color) => (
 
-                                    key={color}
+                                    <button
 
-                                    className={
+                                        key={color}
 
-                                        settings.accent === color
+                                        className={
 
-                                            ?
+                                            settings.accent === color
 
-                                            "color-dot active"
+                                                ?
 
-                                            :
+                                                "color-dot active"
 
-                                            "color-dot"
+                                                :
 
-                                    }
+                                                "color-dot"
 
-                                    style={{
+                                        }
 
-                                        background: color
+                                        style={{
 
-                                    }}
+                                            background:
 
-                                    onClick={() =>
+                                                color
 
-                                        setSettings({
+                                        }}
 
-                                            ...settings,
+                                        onClick={() =>
 
-                                            accent: color
+                                            setSettings({
 
-                                        })
+                                                ...settings,
 
-                                    }
+                                                accent:
 
-                                />
+                                                    color
 
-                            ))
+                                            })
+
+                                        }
+
+                                    />
+
+                                )
+
+                            )
 
                         }
 
                     </div>
 
                 </div>
+
 
                 <div className="settings-row">
 
@@ -349,6 +438,7 @@ function AppearanceSettings() {
 
                             </h4>
 
+
                             <p>
 
                                 Reduce spacing across the application.
@@ -356,6 +446,7 @@ function AppearanceSettings() {
                             </p>
 
                         </div>
+
 
                         <label className="switch">
 
@@ -365,11 +456,20 @@ function AppearanceSettings() {
 
                                 name="compact"
 
-                                checked={settings.compact}
+                                checked={
 
-                                onChange={handleChange}
+                                    settings.compact
+
+                                }
+
+                                onChange={
+
+                                    handleChange
+
+                                }
 
                             />
+
 
                             <span className="slider"></span>
 
@@ -379,7 +479,8 @@ function AppearanceSettings() {
 
                 </div>
 
-                                <div className="settings-row">
+
+                <div className="settings-row">
 
                     <div className="settings-toggle-card">
 
@@ -391,6 +492,7 @@ function AppearanceSettings() {
 
                             </h4>
 
+
                             <p>
 
                                 Use a compact navigation panel.
@@ -398,6 +500,7 @@ function AppearanceSettings() {
                             </p>
 
                         </div>
+
 
                         <label className="switch">
 
@@ -407,11 +510,20 @@ function AppearanceSettings() {
 
                                 name="sidebarCollapsed"
 
-                                checked={settings.sidebarCollapsed}
+                                checked={
 
-                                onChange={handleChange}
+                                    settings.sidebarCollapsed
+
+                                }
+
+                                onChange={
+
+                                    handleChange
+
+                                }
 
                             />
+
 
                             <span className="slider"></span>
 
@@ -421,6 +533,7 @@ function AppearanceSettings() {
 
                 </div>
 
+
                 <div className="settings-preview">
 
                     <h4>
@@ -428,6 +541,7 @@ function AppearanceSettings() {
                         Live Preview
 
                     </h4>
+
 
                     <div className="preview-card">
 
@@ -437,7 +551,9 @@ function AppearanceSettings() {
 
                             style={{
 
-                                background: settings.accent
+                                background:
+
+                                    settings.accent
 
                             }}
 
@@ -446,6 +562,7 @@ function AppearanceSettings() {
                             TaskMatrix
 
                         </div>
+
 
                         <div className="preview-body">
 
@@ -460,6 +577,7 @@ function AppearanceSettings() {
                     </div>
 
                 </div>
+
 
                 <div className="settings-actions">
 
@@ -477,6 +595,7 @@ function AppearanceSettings() {
 
                     </button>
 
+
                     <button
 
                         className="save-settings-btn"
@@ -484,8 +603,12 @@ function AppearanceSettings() {
                         onClick={upgradeToPro}
 
                         style={{
-    background:"#16a34a"
-}}
+
+                            background:
+
+                                "#16a34a"
+
+                        }}
 
                     >
 
@@ -502,5 +625,6 @@ function AppearanceSettings() {
     );
 
 }
+
 
 export default AppearanceSettings;

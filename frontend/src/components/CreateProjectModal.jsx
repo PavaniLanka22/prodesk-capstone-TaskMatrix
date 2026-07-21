@@ -1,8 +1,22 @@
 import axios from "axios";
+
 import { useState } from "react";
+
 import { toast } from "react-toastify";
 
-function CreateProjectModal({ open, onClose, onProjectCreated }) {
+
+function CreateProjectModal({
+
+    open,
+
+    onClose,
+
+    onProjectCreated
+
+}) {
+
+    const API_URL = import.meta.env.VITE_API_URL;
+
 
     const [project, setProject] = useState({
 
@@ -16,7 +30,9 @@ function CreateProjectModal({ open, onClose, onProjectCreated }) {
 
     });
 
+
     if (!open) return null;
+
 
     const handleChange = (e) => {
 
@@ -30,15 +46,17 @@ function CreateProjectModal({ open, onClose, onProjectCreated }) {
 
     };
 
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
+
 
         try {
 
             const response = await axios.post(
 
-                "http://localhost:5000/api/projects",
+                `${API_URL}/api/projects`,
 
                 project,
 
@@ -46,7 +64,9 @@ function CreateProjectModal({ open, onClose, onProjectCreated }) {
 
                     headers: {
 
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                        Authorization:
+
+                            `Bearer ${localStorage.getItem("token")}`
 
                     }
 
@@ -54,15 +74,26 @@ function CreateProjectModal({ open, onClose, onProjectCreated }) {
 
             );
 
+
             if (onProjectCreated) {
 
-    onProjectCreated(response.data.project);
+                onProjectCreated(
 
-}
+                    response.data.project
 
-toast.success("Project created successfully!");
+                );
 
-setProject({
+            }
+
+
+            toast.success(
+
+                "Project created successfully!"
+
+            );
+
+
+            setProject({
 
                 name: "",
 
@@ -74,15 +105,23 @@ setProject({
 
             });
 
+
             onClose();
 
         }
 
         catch (error) {
 
-            console.error(error);
+            console.error(
 
-            alert(
+                "Create project error:",
+
+                error
+
+            );
+
+
+            toast.error(
 
                 error.response?.data?.message ||
 
@@ -93,6 +132,7 @@ setProject({
         }
 
     };
+
 
     return (
 
@@ -108,11 +148,20 @@ setProject({
 
                 className="modal"
 
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) =>
+
+                    e.stopPropagation()
+
+                }
 
             >
 
-                <h2>Create New Project</h2>
+                <h2>
+
+                    Create New Project
+
+                </h2>
+
 
                 <p className="modal-subtitle">
 
@@ -120,9 +169,19 @@ setProject({
 
                 </p>
 
-                <form onSubmit={handleSubmit}>
 
-                    <label>Project Name</label>
+                <form
+
+                    onSubmit={handleSubmit}
+
+                >
+
+                    <label>
+
+                        Project Name
+
+                    </label>
+
 
                     <input
 
@@ -140,7 +199,13 @@ setProject({
 
                     />
 
-                    <label>Description</label>
+
+                    <label>
+
+                        Description
+
+                    </label>
+
 
                     <textarea
 
@@ -156,7 +221,13 @@ setProject({
 
                     />
 
-                    <label>Category</label>
+
+                    <label>
+
+                        Category
+
+                    </label>
+
 
                     <select
 
@@ -168,17 +239,42 @@ setProject({
 
                     >
 
-                        <option value="Frontend">Frontend</option>
+                        <option value="Frontend">
 
-                        <option value="Backend">Backend</option>
+                            Frontend
 
-                        <option value="Full Stack">Full Stack</option>
+                        </option>
 
-                        <option value="Mobile">Mobile</option>
+
+                        <option value="Backend">
+
+                            Backend
+
+                        </option>
+
+
+                        <option value="Full Stack">
+
+                            Full Stack
+
+                        </option>
+
+
+                        <option value="Mobile">
+
+                            Mobile
+
+                        </option>
 
                     </select>
 
-                    <label>Due Date</label>
+
+                    <label>
+
+                        Due Date
+
+                    </label>
+
 
                     <input
 
@@ -191,6 +287,7 @@ setProject({
                         onChange={handleChange}
 
                     />
+
 
                     <div className="modal-buttons">
 
@@ -207,6 +304,7 @@ setProject({
                             Cancel
 
                         </button>
+
 
                         <button
 
@@ -231,5 +329,6 @@ setProject({
     );
 
 }
+
 
 export default CreateProjectModal;

@@ -1,6 +1,13 @@
 import axios from "axios";
-import { Trash2 } from "lucide-react";
-import { toast } from "react-toastify";
+
+import {
+    Trash2
+} from "lucide-react";
+
+import {
+    toast
+} from "react-toastify";
+
 
 function DeleteTaskModal({
 
@@ -18,12 +25,17 @@ function DeleteTaskModal({
 
     const token = localStorage.getItem("token");
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
+
     if (!open || !task) return null;
+
 
     const handleDelete = async () => {
 
         // Backup current tasks
         const previousTasks = [...tasks];
+
 
         // Optimistically remove task immediately
         setTasks(
@@ -36,20 +48,24 @@ function DeleteTaskModal({
 
         );
 
+
         // Close modal immediately
         onClose();
+
 
         try {
 
             await axios.delete(
 
-                `http://localhost:5000/api/tasks/${task._id}`,
+                `${API_URL}/api/tasks/${task._id}`,
 
                 {
 
                     headers: {
 
-                        Authorization: `Bearer ${token}`
+                        Authorization:
+
+                            `Bearer ${token}`
 
                     }
 
@@ -57,14 +73,25 @@ function DeleteTaskModal({
 
             );
 
-            toast.success("Task deleted successfully");
+
+            toast.success(
+
+                "Task deleted successfully"
+
+            );
 
         }
+
 
         catch (error) {
 
             // Restore old data if API fails
-            setTasks(previousTasks);
+            setTasks(
+
+                previousTasks
+
+            );
+
 
             toast.error(
 
@@ -77,6 +104,7 @@ function DeleteTaskModal({
         }
 
     };
+
 
     return (
 
@@ -92,7 +120,11 @@ function DeleteTaskModal({
 
                 className="delete-modal"
 
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) =>
+
+                    e.stopPropagation()
+
+                }
 
             >
 
@@ -102,11 +134,13 @@ function DeleteTaskModal({
 
                 </div>
 
+
                 <h2>
 
                     Delete Task
 
                 </h2>
+
 
                 <p>
 
@@ -114,17 +148,20 @@ function DeleteTaskModal({
 
                 </p>
 
+
                 <h3>
 
                     "{task.title}"
 
                 </h3>
 
+
                 <span>
 
                     This action cannot be undone.
 
                 </span>
+
 
                 <div className="delete-buttons">
 
@@ -139,6 +176,7 @@ function DeleteTaskModal({
                         Cancel
 
                     </button>
+
 
                     <button
 
@@ -161,5 +199,6 @@ function DeleteTaskModal({
     );
 
 }
+
 
 export default DeleteTaskModal;

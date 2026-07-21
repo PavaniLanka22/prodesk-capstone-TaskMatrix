@@ -5,8 +5,9 @@ import {
     FiMail,
     FiUser,
     FiUsers,
-    FiX
+    FiX,
 } from "react-icons/fi";
+
 
 function EditMemberModal({
 
@@ -16,7 +17,7 @@ function EditMemberModal({
 
     onClose,
 
-    onSave
+    onSave,
 
 }) {
 
@@ -30,41 +31,109 @@ function EditMemberModal({
 
         department: "Engineering",
 
-        status: "Online"
+        status: "Offline",
 
     });
+
+
+    const [saving, setSaving] = useState(false);
+
+
+    // ==================================================
+    // LOAD SELECTED MEMBER
+    // ==================================================
 
     useEffect(() => {
 
         if (member) {
 
-            setFormData(member);
+            setFormData({
+
+                name:
+                    member.name || "",
+
+                email:
+                    member.email || "",
+
+                role:
+                    member.role || "Developer",
+
+                department:
+                    member.department ||
+                    "Engineering",
+
+                status:
+                    member.status || "Offline",
+
+            });
 
         }
 
     }, [member]);
 
-    if (!open || !member) return null;
+
+    if (!open || !member) {
+
+        return null;
+
+    }
+
+
+    // ==================================================
+    // HANDLE INPUT CHANGE
+    // ==================================================
 
     const handleChange = (e) => {
 
-        setFormData({
+        const {
+            name,
+            value,
+        } = e.target;
 
-            ...formData,
 
-            [e.target.name]: e.target.value
+        setFormData(
+            previousData => ({
 
-        });
+                ...previousData,
+
+                [name]: value,
+
+            })
+        );
 
     };
 
-    const handleSubmit = (e) => {
+
+    // ==================================================
+    // SAVE MEMBER
+    // ==================================================
+
+    const handleSubmit = async (e) => {
 
         e.preventDefault();
 
-        onSave(formData);
+
+        try {
+
+            setSaving(true);
+
+
+            await onSave({
+
+                ...member,
+
+                ...formData,
+
+            });
+
+        } finally {
+
+            setSaving(false);
+
+        }
 
     };
+
 
     return (
 
@@ -80,17 +149,24 @@ function EditMemberModal({
 
                 className="invite-modal"
 
-                onClick={(e)=>e.stopPropagation()}
+                onClick={(e) =>
+                    e.stopPropagation()
+                }
 
             >
+
+                {/* =====================================
+                    HEADER
+                ====================================== */}
 
                 <div className="invite-header">
 
                     <div className="invite-icon">
 
-                        <FiUser/>
+                        <FiUser />
 
                     </div>
+
 
                     <div>
 
@@ -108,19 +184,27 @@ function EditMemberModal({
 
                     </div>
 
+
                     <button
 
                         className="close-btn"
+
+                        type="button"
 
                         onClick={onClose}
 
                     >
 
-                        <FiX/>
+                        <FiX />
 
                     </button>
 
                 </div>
+
+
+                {/* =====================================
+                    FORM
+                ====================================== */}
 
                 <form
 
@@ -130,6 +214,8 @@ function EditMemberModal({
 
                 >
 
+                    {/* NAME */}
+
                     <div className="form-group">
 
                         <label>
@@ -138,17 +224,24 @@ function EditMemberModal({
 
                         </label>
 
+
                         <div className="input-icon">
 
-                            <FiUser/>
+                            <FiUser />
 
                             <input
 
+                                type="text"
+
                                 name="name"
 
-                                value={formData.name}
+                                value={
+                                    formData.name
+                                }
 
-                                onChange={handleChange}
+                                onChange={
+                                    handleChange
+                                }
 
                                 required
 
@@ -157,6 +250,9 @@ function EditMemberModal({
                         </div>
 
                     </div>
+
+
+                    {/* EMAIL */}
 
                     <div className="form-group">
 
@@ -166,9 +262,10 @@ function EditMemberModal({
 
                         </label>
 
+
                         <div className="input-icon">
 
-                            <FiMail/>
+                            <FiMail />
 
                             <input
 
@@ -176,9 +273,13 @@ function EditMemberModal({
 
                                 name="email"
 
-                                value={formData.email}
+                                value={
+                                    formData.email
+                                }
 
-                                onChange={handleChange}
+                                onChange={
+                                    handleChange
+                                }
 
                                 required
 
@@ -187,6 +288,9 @@ function EditMemberModal({
                         </div>
 
                     </div>
+
+
+                    {/* ROLE + DEPARTMENT */}
 
                     <div className="form-row">
 
@@ -198,35 +302,61 @@ function EditMemberModal({
 
                             </label>
 
+
                             <div className="input-icon">
 
-                                <FiBriefcase/>
+                                <FiBriefcase />
 
                                 <select
 
                                     name="role"
 
-                                    value={formData.role}
+                                    value={
+                                        formData.role
+                                    }
 
-                                    onChange={handleChange}
+                                    onChange={
+                                        handleChange
+                                    }
 
                                 >
 
-                                    <option>Admin</option>
+                                    <option value="Admin">
 
-                                    <option>Manager</option>
+                                        Admin
 
-                                    <option>Developer</option>
+                                    </option>
 
-                                    <option>Tester</option>
+                                    <option value="Manager">
 
-                                    <option>Viewer</option>
+                                        Manager
+
+                                    </option>
+
+                                    <option value="Developer">
+
+                                        Developer
+
+                                    </option>
+
+                                    <option value="Tester">
+
+                                        Tester
+
+                                    </option>
+
+                                    <option value="Viewer">
+
+                                        Viewer
+
+                                    </option>
 
                                 </select>
 
                             </div>
 
                         </div>
+
 
                         <div className="form-group">
 
@@ -236,31 +366,60 @@ function EditMemberModal({
 
                             </label>
 
+
                             <div className="input-icon">
 
-                                <FiUsers/>
+                                <FiUsers />
 
                                 <select
 
                                     name="department"
 
-                                    value={formData.department}
+                                    value={
+                                        formData.department
+                                    }
 
-                                    onChange={handleChange}
+                                    onChange={
+                                        handleChange
+                                    }
 
                                 >
 
-                                    <option>Engineering</option>
+                                    <option value="Engineering">
 
-                                    <option>Frontend</option>
+                                        Engineering
 
-                                    <option>Backend</option>
+                                    </option>
 
-                                    <option>QA</option>
+                                    <option value="Frontend">
 
-                                    <option>Management</option>
+                                        Frontend
 
-                                    <option>Design</option>
+                                    </option>
+
+                                    <option value="Backend">
+
+                                        Backend
+
+                                    </option>
+
+                                    <option value="QA">
+
+                                        QA
+
+                                    </option>
+
+                                    <option value="Management">
+
+                                        Management
+
+                                    </option>
+
+                                    <option value="Design">
+
+                                        Design
+
+                                    </option>
 
                                 </select>
 
@@ -270,6 +429,9 @@ function EditMemberModal({
 
                     </div>
 
+
+                    {/* STATUS */}
+
                     <div className="form-group">
 
                         <label>
@@ -278,29 +440,45 @@ function EditMemberModal({
 
                         </label>
 
+
                         <div className="input-icon">
 
-                            <FiUsers/>
+                            <FiUsers />
 
                             <select
 
                                 name="status"
 
-                                value={formData.status}
+                                value={
+                                    formData.status
+                                }
 
-                                onChange={handleChange}
+                                onChange={
+                                    handleChange
+                                }
 
                             >
 
-                                <option>Online</option>
+                                <option value="Online">
 
-                                <option>Offline</option>
+                                    Online
+
+                                </option>
+
+                                <option value="Offline">
+
+                                    Offline
+
+                                </option>
 
                             </select>
 
                         </div>
 
                     </div>
+
+
+                    {/* FOOTER */}
 
                     <div className="invite-footer">
 
@@ -312,11 +490,14 @@ function EditMemberModal({
 
                             onClick={onClose}
 
+                            disabled={saving}
+
                         >
 
                             Cancel
 
                         </button>
+
 
                         <button
 
@@ -324,9 +505,17 @@ function EditMemberModal({
 
                             type="submit"
 
+                            disabled={saving}
+
                         >
 
-                            Save Changes
+                            {saving
+
+                                ? "Saving..."
+
+                                : "Save Changes"
+
+                            }
 
                         </button>
 
@@ -341,5 +530,6 @@ function EditMemberModal({
     );
 
 }
+
 
 export default EditMemberModal;

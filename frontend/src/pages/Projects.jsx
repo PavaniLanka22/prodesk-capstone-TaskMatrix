@@ -1,6 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
+import api from "../services/api";
 
 import CreateProjectModal from "../components/CreateProjectModal";
 import DeleteProjectModal from "../components/DeleteProjectModal";
@@ -23,47 +24,52 @@ function Projects() {
 
     const [selectedProject, setSelectedProject] = useState(null);
 
-    const token = localStorage.getItem("token");
+    const [loading, setLoading] = useState(true);
+
 
     const fetchProjects = async () => {
 
         try {
 
-            const response = await axios.get(
+            setLoading(true);
 
-                "http://localhost:5000/api/projects",
+            const response = await api.get("/projects");
 
-                {
+            console.log("PROJECTS RESPONSE:", response.data);
 
-                    headers: {
-
-                        Authorization: `Bearer ${token}`
-
-                    }
-
-                }
-
-            );
-
-            setProjects(response.data.projects);
+            setProjects(response.data.projects || []);
 
         }
 
         catch (error) {
 
-            console.log(error);
+            console.error(
+                "Failed to fetch projects:",
+                error
+            );
 
-            toast.error("Failed to fetch projects.");
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to fetch projects."
+            );
+
+        }
+
+        finally {
+
+            setLoading(false);
 
         }
 
     };
+
 
     useEffect(() => {
 
         fetchProjects();
 
     }, []);
+
 
     const handleProjectCreated = (newProject) => {
 
@@ -76,6 +82,7 @@ function Projects() {
         ]);
 
     };
+
 
     const handleProjectUpdated = (updatedProject) => {
 
@@ -95,47 +102,46 @@ function Projects() {
 
     };
 
+
     const deleteProject = async () => {
+
+        if (!selectedProject) return;
 
         try {
 
-            await axios.delete(
+            await api.delete(
 
-                `http://localhost:5000/api/projects/${selectedProject._id}`,
-
-                {
-
-                    headers: {
-
-                        Authorization: `Bearer ${token}`
-
-                    }
-
-                }
+                `/projects/${selectedProject._id}`
 
             );
 
-            setProjects(
 
-                projects.filter(
+            const deletedProjectName =
+                selectedProject.name;
+
+
+            setProjects((prevProjects) =>
+
+                prevProjects.filter(
 
                     (project) =>
 
-                        project._id !== selectedProject._id
+                        project._id !==
+                        selectedProject._id
 
                 )
 
             );
 
-            const deletedProjectName = selectedProject.name;
 
             setDeleteModal(false);
 
             setSelectedProject(null);
 
+
             toast.success(
 
-                `🗑️ "${deletedProjectName}" deleted successfully!`
+                `"${deletedProjectName}" deleted successfully!`
 
             );
 
@@ -143,13 +149,26 @@ function Projects() {
 
         catch (error) {
 
-            console.log(error);
+            console.error(
 
-            toast.error("Failed to delete project.");
+                "Failed to delete project:",
+
+                error
+
+            );
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Failed to delete project."
+
+            );
 
         }
 
     };
+
 
     return (
 
@@ -157,9 +176,11 @@ function Projects() {
 
             <Sidebar />
 
+
             <div className="main-content">
 
                 <Navbar />
+
 
                 <div className="page-header">
 
@@ -175,11 +196,14 @@ function Projects() {
 
                     </div>
 
+
                     <button
 
                         className="new-project"
 
-                        onClick={() => setShowModal(true)}
+                        onClick={() =>
+                            setShowModal(true)
+                        }
 
                     >
 
@@ -189,85 +213,148 @@ function Projects() {
 
                 </div>
 
-                <div className="projects-grid">
 
-                    {
+                {
 
-                        projects.length === 0
+                    loading
 
-                            ?
+                        ?
 
-                            (
+                        (
 
-                                <p>
+                            <div className="loading-state">
 
-                                    No projects found.
+                                Loading Projects...
 
-                                    Create your first project.
+                            </div>
 
-                                </p>
+                        )
 
-                            )
+                        :
 
-                            :
+                        (
 
-                            (
+                            <div className="projects-grid">
 
-                                projects.map((project) => (
+                                {
 
-                                    <ProjectCard
+                                    projects.length === 0
 
-                                        key={project._id}
+                                        ?
 
-                                        id={project._id}
+                                        (
 
-                                        title={project.name}
+                                            <p>
 
-                                        category={project.category}
+                                                No projects found.
 
-                                        progress={project.progress || 0}
+                                                Create your first project.
 
-                                        tasks={0}
+                                            </p>
 
-                                        members={1}
+                                        )
 
-                                        onEdit={() => {
+                                        :
 
-                                            setSelectedProject(project);
+                                        (
 
-                                            setEditModal(true);
+                                            projects.map(
 
-                                        }}
+                                                (project) => (
 
-                                        onDelete={() => {
+                                                    <ProjectCard
 
-                                            setSelectedProject(project);
+                                                        key={
+                                                            project._id
+                                                        }
 
-                                            setDeleteModal(true);
+                                                        id={
+                                                            project._id
+                                                        }
 
-                                        }}
+                                                        title={
+                                                            project.name
+                                                        }
 
-                                    />
+                                                        category={
+                                                            project.category
+                                                        }
 
-                                ))
+                                                        progress={
+                                                            project.progress ||
+                                                            0
+                                                        }
 
-                            )
+                                                        tasks={
+                                                            project.tasks?.length ||
+                                                            0
+                                                        }
 
-                    }
+                                                        members={
 
-                </div>
+                                                            project.members?.length ||
+
+                                                            1
+
+                                                        }
+
+                                                        onEdit={() => {
+
+                                                            setSelectedProject(
+                                                                project
+                                                            );
+
+                                                            setEditModal(
+                                                                true
+                                                            );
+
+                                                        }}
+
+                                                        onDelete={() => {
+
+                                                            setSelectedProject(
+                                                                project
+                                                            );
+
+                                                            setDeleteModal(
+                                                                true
+                                                            );
+
+                                                        }}
+
+                                                    />
+
+                                                )
+
+                                            )
+
+                                        )
+
+                                }
+
+                            </div>
+
+                        )
+
+                }
 
             </div>
+
 
             <CreateProjectModal
 
                 open={showModal}
 
-                onClose={() => setShowModal(false)}
+                onClose={() =>
+                    setShowModal(false)
+                }
 
-                onProjectCreated={handleProjectCreated}
+                onProjectCreated={
+                    handleProjectCreated
+                }
 
             />
+
 
             <EditProjectModal
 
@@ -283,15 +370,20 @@ function Projects() {
 
                 }}
 
-                onProjectUpdated={handleProjectUpdated}
+                onProjectUpdated={
+                    handleProjectUpdated
+                }
 
             />
+
 
             <DeleteProjectModal
 
                 open={deleteModal}
 
-                projectName={selectedProject?.name}
+                projectName={
+                    selectedProject?.name
+                }
 
                 onClose={() => {
 
@@ -301,7 +393,9 @@ function Projects() {
 
                 }}
 
-                onConfirm={deleteProject}
+                onConfirm={
+                    deleteProject
+                }
 
             />
 
@@ -310,5 +404,6 @@ function Projects() {
     );
 
 }
+
 
 export default Projects;

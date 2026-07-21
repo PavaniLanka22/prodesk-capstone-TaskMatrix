@@ -46,11 +46,13 @@ function Tasks() {
 
     const [priorityFilter, setPriorityFilter] = useState("All");
 
+
     useEffect(() => {
 
         fetchTasks();
 
     }, []);
+
 
     const fetchTasks = async () => {
 
@@ -60,7 +62,7 @@ function Tasks() {
 
             const response = await axios.get(
 
-                "http://localhost:5000/api/tasks",
+                `${import.meta.env.VITE_API_URL}/api/tasks`,
 
                 {
 
@@ -74,13 +76,21 @@ function Tasks() {
 
             );
 
-            setTasks(response.data.tasks);
+            setTasks(response.data.tasks || []);
 
         }
 
         catch (error) {
 
-            console.log(error);
+            console.log(
+
+                "Error fetching tasks:",
+
+                error.response?.data || error.message
+
+            );
+
+            setTasks([]);
 
         }
 
@@ -92,6 +102,7 @@ function Tasks() {
 
     };
 
+
     const filteredTasks = useMemo(() => {
 
         return tasks.filter((task) => {
@@ -99,14 +110,19 @@ function Tasks() {
             const matchesSearch =
 
                 task.title
+
                     .toLowerCase()
+
                     .includes(search.toLowerCase())
 
                 ||
 
                 task.description
+
                     ?.toLowerCase()
+
                     .includes(search.toLowerCase());
+
 
             const matchesStatus =
 
@@ -116,6 +132,7 @@ function Tasks() {
 
                     : task.status === statusFilter;
 
+
             const matchesPriority =
 
                 priorityFilter === "All"
@@ -123,6 +140,7 @@ function Tasks() {
                     ? true
 
                     : task.priority === priorityFilter;
+
 
             return (
 
@@ -148,7 +166,9 @@ function Tasks() {
 
     ]);
 
+
     const totalTasks = tasks.length;
+
 
     const completedTasks = tasks.filter(
 
@@ -156,11 +176,13 @@ function Tasks() {
 
     ).length;
 
+
     const progressTasks = tasks.filter(
 
         (task) => task.status === "In Progress"
 
     ).length;
+
 
     const todoTasks = tasks.filter(
 
@@ -168,7 +190,8 @@ function Tasks() {
 
     ).length;
 
-        return (
+
+    return (
 
         <div className="dashboard-container">
 
@@ -216,11 +239,12 @@ function Tasks() {
 
                     </div>
 
+
                     <div className="stats-grid">
 
                         <div className="stats-card">
 
-                            <FaClipboardList className="stats-icon"/>
+                            <FaClipboardList className="stats-icon" />
 
                             <div>
 
@@ -239,6 +263,7 @@ function Tasks() {
                             </div>
 
                         </div>
+
 
                         <div className="stats-card">
 
@@ -266,6 +291,7 @@ function Tasks() {
 
                         </div>
 
+
                         <div className="stats-card">
 
                             <FaSpinner
@@ -291,6 +317,7 @@ function Tasks() {
                             </div>
 
                         </div>
+
 
                         <div className="stats-card">
 
@@ -320,6 +347,7 @@ function Tasks() {
 
                     </div>
 
+
                     <div className="task-toolbar">
 
                         <div className="search-box">
@@ -347,6 +375,7 @@ function Tasks() {
                             />
 
                         </div>
+
 
                         <div className="filter-group">
 
@@ -400,6 +429,7 @@ function Tasks() {
 
                         </div>
 
+
                         <div className="filter-group">
 
                             <select
@@ -448,95 +478,97 @@ function Tasks() {
 
                     </div>
 
-                                        {
+
+                    {
 
                         loading
 
-                        ?
+                            ?
 
-                        (
+                            (
 
-                            <div className="loading-state">
+                                <div className="loading-state">
 
-                                Loading tasks...
+                                    Loading tasks...
 
-                            </div>
+                                </div>
 
-                        )
+                            )
 
-                        :
+                            :
 
-                        filteredTasks.length === 0
+                            filteredTasks.length === 0
 
-                        ?
+                                ?
 
-                        (
+                                (
 
-                            <div className="empty-state">
+                                    <div className="empty-state">
 
-                                <h2>
+                                        <h2>
 
-                                    No Tasks Found
+                                            No Tasks Found
 
-                                </h2>
+                                        </h2>
 
-                                <p>
+                                        <p>
 
-                                    Create your first task to start managing your work.
+                                            Create your first task to start managing your work.
 
-                                </p>
+                                        </p>
 
-                            </div>
+                                    </div>
 
-                        )
+                                )
 
-                        :
+                                :
 
-                        (
+                                (
 
-                            <div className="projects-grid">
+                                    <div className="projects-grid">
 
-                                {
+                                        {
 
-                                    filteredTasks.map((task) => (
+                                            filteredTasks.map((task) => (
 
-                                        <TaskCard
+                                                <TaskCard
 
-                                            key={task._id}
+                                                    key={task._id}
 
-                                            task={task}
+                                                    task={task}
 
-                                            onEdit={() => {
+                                                    onEdit={() => {
 
-                                                setSelectedTask(task);
+                                                        setSelectedTask(task);
 
-                                                setShowEditModal(true);
+                                                        setShowEditModal(true);
 
-                                            }}
+                                                    }}
 
-                                            onDelete={() => {
+                                                    onDelete={() => {
 
-                                                setSelectedTask(task);
+                                                        setSelectedTask(task);
 
-                                                setShowDeleteModal(true);
+                                                        setShowDeleteModal(true);
 
-                                            }}
+                                                    }}
 
-                                        />
+                                                />
 
-                                    ))
+                                            ))
 
-                                }
+                                        }
 
-                            </div>
+                                    </div>
 
-                        )
+                                )
 
                     }
 
                 </div>
 
             </div>
+
 
             <CreateTaskModal
 
@@ -551,6 +583,7 @@ function Tasks() {
                 onTaskCreated={fetchTasks}
 
             />
+
 
             <EditTaskModal
 
@@ -570,25 +603,26 @@ function Tasks() {
 
             />
 
+
             <DeleteTaskModal
 
-    open={showDeleteModal}
+                open={showDeleteModal}
 
-    task={selectedTask}
+                task={selectedTask}
 
-    tasks={tasks}
+                tasks={tasks}
 
-    setTasks={setTasks}
+                setTasks={setTasks}
 
-    onClose={() => {
+                onClose={() => {
 
-        setShowDeleteModal(false);
+                    setShowDeleteModal(false);
 
-        setSelectedTask(null);
+                    setSelectedTask(null);
 
-    }}
+                }}
 
-/>
+            />
 
         </div>
 

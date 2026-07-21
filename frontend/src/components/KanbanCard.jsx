@@ -1,5 +1,8 @@
 import axios from "axios";
-import { toast } from "react-toastify";
+
+import {
+    toast
+} from "react-toastify";
 
 import {
     FiCalendar,
@@ -12,6 +15,7 @@ import {
     MdOutlineTaskAlt
 } from "react-icons/md";
 
+
 function KanbanCard({
 
     task,
@@ -22,23 +26,41 @@ function KanbanCard({
 
 }) {
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const token = localStorage.getItem("token");
+
 
     const deleteTask = async () => {
 
-        if (!window.confirm(`Delete "${task.title}"?`)) return;
+        if (
+
+            !window.confirm(
+
+                `Delete "${task.title}"?`
+
+            )
+
+        ) {
+
+            return;
+
+        }
+
 
         try {
 
             await axios.delete(
 
-                `http://localhost:5000/api/tasks/${task._id}`,
+                `${API_URL}/api/tasks/${task._id}`,
 
                 {
 
                     headers: {
 
-                        Authorization: `Bearer ${token}`
+                        Authorization:
+
+                            `Bearer ${token}`
 
                     }
 
@@ -46,19 +68,45 @@ function KanbanCard({
 
             );
 
-            toast.success("Task deleted");
 
-            onDeleted();
+            toast.success(
+
+                "Task deleted"
+
+            );
+
+
+            if (onDeleted) {
+
+                onDeleted();
+
+            }
 
         }
 
-        catch {
+        catch (error) {
 
-            toast.error("Unable to delete task.");
+            console.error(
+
+                "Delete task error:",
+
+                error
+
+            );
+
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Unable to delete task."
+
+            );
 
         }
 
     };
+
 
     const priorityClass = () => {
 
@@ -68,9 +116,11 @@ function KanbanCard({
 
                 return "priority high";
 
+
             case "Medium":
 
                 return "priority medium";
+
 
             default:
 
@@ -79,6 +129,7 @@ function KanbanCard({
         }
 
     };
+
 
     return (
 
@@ -92,6 +143,7 @@ function KanbanCard({
 
                 </div>
 
+
                 <div className="kanban-actions">
 
                     <button
@@ -100,17 +152,22 @@ function KanbanCard({
 
                         onClick={onEdit}
 
+                        type="button"
+
                     >
 
                         <FiEdit2 />
 
                     </button>
 
+
                     <button
 
                         className="kanban-icon-btn delete"
 
                         onClick={deleteTask}
+
+                        type="button"
 
                     >
 
@@ -122,28 +179,40 @@ function KanbanCard({
 
             </div>
 
+
             <h3 className="kanban-title">
 
                 {task.title}
 
             </h3>
 
+
             <p className="kanban-description">
 
-                {task.description || "No description"}
+                {task.description ||
+
+                    "No description"}
 
             </p>
 
+
             <div className="kanban-tags">
 
-                <span className={priorityClass()}>
+                <span
+
+                    className={priorityClass()}
+
+                >
 
                     {task.priority}
 
                 </span>
+
             </div>
 
+
             <div className="kanban-divider"></div>
+
 
             <div className="kanban-meta">
 
@@ -151,22 +220,33 @@ function KanbanCard({
 
                     <FiFolder />
 
+
                     <span>
 
-                        {task.project?.name || "No Project"}
+                        {task.project?.name ||
+
+                            "No Project"}
 
                     </span>
 
                 </div>
 
+
                 <div className="meta-item">
 
                     <FiCalendar />
 
+
                     <span>
 
                         {task.dueDate
-                            ? new Date(task.dueDate).toLocaleDateString()
+
+                            ? new Date(
+
+                                task.dueDate
+
+                            ).toLocaleDateString()
+
                             : "No Date"}
 
                     </span>
@@ -180,5 +260,6 @@ function KanbanCard({
     );
 
 }
+
 
 export default KanbanCard;

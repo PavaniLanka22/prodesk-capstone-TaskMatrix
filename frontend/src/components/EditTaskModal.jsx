@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import {
     AlignLeft,
     Calendar,
@@ -6,8 +7,16 @@ import {
     Flag,
     FolderKanban
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+
+import {
+    useEffect,
+    useState
+} from "react";
+
+import {
+    toast
+} from "react-toastify";
+
 
 function EditTaskModal({
 
@@ -21,11 +30,15 @@ function EditTaskModal({
 
 }) {
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const token = localStorage.getItem("token");
+
 
     const [projects, setProjects] = useState([]);
 
     const [loading, setLoading] = useState(false);
+
 
     const [formData, setFormData] = useState({
 
@@ -43,31 +56,45 @@ function EditTaskModal({
 
     });
 
+
     useEffect(() => {
 
         if (!open || !task) return;
 
+
         setFormData({
 
-            title: task.title,
+            title: task.title || "",
 
-            description: task.description,
+            description: task.description || "",
 
-            priority: task.priority,
+            priority: task.priority || "Medium",
 
-            status: task.status,
+            status: task.status || "Todo",
 
-            dueDate: task.dueDate
-                ? task.dueDate.substring(0, 10)
-                : "",
+            dueDate:
 
-            project: task.project?._id || task.project
+                task.dueDate
+
+                    ? task.dueDate.substring(0, 10)
+
+                    : "",
+
+            project:
+
+                task.project?._id ||
+
+                task.project ||
+
+                ""
 
         });
+
 
         fetchProjects();
 
     }, [open, task]);
+
 
     const fetchProjects = async () => {
 
@@ -75,13 +102,15 @@ function EditTaskModal({
 
             const response = await axios.get(
 
-                "http://localhost:5000/api/projects",
+                `${API_URL}/api/projects`,
 
                 {
 
                     headers: {
 
-                        Authorization: `Bearer ${token}`
+                        Authorization:
+
+                            `Bearer ${token}`
 
                     }
 
@@ -89,19 +118,32 @@ function EditTaskModal({
 
             );
 
-            setProjects(response.data.projects);
+
+            setProjects(
+
+                response.data.projects || []
+
+            );
 
         }
 
         catch (error) {
 
-            console.log(error);
+            console.error(
+
+                "Fetch projects error:",
+
+                error
+
+            );
 
         }
 
     };
 
+
     if (!open) return null;
+
 
     const handleChange = (e) => {
 
@@ -109,11 +151,14 @@ function EditTaskModal({
 
             ...formData,
 
-            [e.target.name]: e.target.value
+            [e.target.name]:
+
+                e.target.value
 
         });
 
     };
+
 
     const handleSubmit = async (e) => {
 
@@ -121,11 +166,12 @@ function EditTaskModal({
 
         setLoading(true);
 
+
         try {
 
             const response = await axios.put(
 
-                `http://localhost:5000/api/tasks/${task._id}`,
+                `${API_URL}/api/tasks/${task._id}`,
 
                 formData,
 
@@ -133,7 +179,9 @@ function EditTaskModal({
 
                     headers: {
 
-                        Authorization: `Bearer ${token}`
+                        Authorization:
+
+                            `Bearer ${token}`
 
                     }
 
@@ -141,15 +189,39 @@ function EditTaskModal({
 
             );
 
-            toast.success("Task updated successfully!");
 
-            onTaskUpdated(response.data.task);
+            toast.success(
+
+                "Task updated successfully!"
+
+            );
+
+
+            if (onTaskUpdated) {
+
+                onTaskUpdated(
+
+                    response.data.task
+
+                );
+
+            }
+
 
             onClose();
 
         }
 
         catch (error) {
+
+            console.error(
+
+                "Update task error:",
+
+                error
+
+            );
+
 
             toast.error(
 
@@ -169,6 +241,7 @@ function EditTaskModal({
 
     };
 
+
     return (
 
         <div
@@ -183,7 +256,11 @@ function EditTaskModal({
 
                 className="task-modal"
 
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) =>
+
+                    e.stopPropagation()
+
+                }
 
             >
 
@@ -195,9 +272,15 @@ function EditTaskModal({
 
                     </div>
 
+
                     <div>
 
-                        <h2>Edit Task</h2>
+                        <h2>
+
+                            Edit Task
+
+                        </h2>
+
 
                         <p>
 
@@ -209,6 +292,7 @@ function EditTaskModal({
 
                 </div>
 
+
                 <form
 
                     className="task-form"
@@ -219,11 +303,17 @@ function EditTaskModal({
 
                     <div className="form-group">
 
-                        <label>Task Title</label>
+                        <label>
+
+                            Task Title
+
+                        </label>
+
 
                         <div className="input-icon">
 
                             <ClipboardList size={18} />
+
 
                             <input
 
@@ -243,13 +333,20 @@ function EditTaskModal({
 
                     </div>
 
+
                     <div className="form-group">
 
-                        <label>Project</label>
+                        <label>
+
+                            Project
+
+                        </label>
+
 
                         <div className="input-icon">
 
                             <FolderKanban size={18} />
+
 
                             <select
 
@@ -259,25 +356,38 @@ function EditTaskModal({
 
                                 onChange={handleChange}
 
+                                required
+
                             >
+
+                                <option value="">
+
+                                    Select Project
+
+                                </option>
+
 
                                 {
 
-                                    projects.map(project => (
+                                    projects.map(
 
-                                        <option
+                                        (project) => (
 
-                                            key={project._id}
+                                            <option
 
-                                            value={project._id}
+                                                key={project._id}
 
-                                        >
+                                                value={project._id}
 
-                                            {project.name}
+                                            >
 
-                                        </option>
+                                                {project.name}
 
-                                    ))
+                                            </option>
+
+                                        )
+
+                                    )
 
                                 }
 
@@ -287,13 +397,20 @@ function EditTaskModal({
 
                     </div>
 
+
                     <div className="form-group full-width">
 
-                        <label>Description</label>
+                        <label>
+
+                            Description
+
+                        </label>
+
 
                         <div className="input-icon textarea-icon">
 
                             <AlignLeft size={18} />
+
 
                             <textarea
 
@@ -311,13 +428,20 @@ function EditTaskModal({
 
                     </div>
 
+
                     <div className="form-group">
 
-                        <label>Due Date</label>
+                        <label>
+
+                            Due Date
+
+                        </label>
+
 
                         <div className="input-icon">
 
                             <Calendar size={18} />
+
 
                             <input
 
@@ -335,13 +459,20 @@ function EditTaskModal({
 
                     </div>
 
+
                     <div className="form-group">
 
-                        <label>Priority</label>
+                        <label>
+
+                            Priority
+
+                        </label>
+
 
                         <div className="input-icon">
 
                             <Flag size={18} />
+
 
                             <select
 
@@ -353,11 +484,25 @@ function EditTaskModal({
 
                             >
 
-                                <option>Low</option>
+                                <option>
 
-                                <option>Medium</option>
+                                    Low
 
-                                <option>High</option>
+                                </option>
+
+
+                                <option>
+
+                                    Medium
+
+                                </option>
+
+
+                                <option>
+
+                                    High
+
+                                </option>
 
                             </select>
 
@@ -365,13 +510,20 @@ function EditTaskModal({
 
                     </div>
 
+
                     <div className="form-group">
 
-                        <label>Status</label>
+                        <label>
+
+                            Status
+
+                        </label>
+
 
                         <div className="input-icon">
 
                             <ClipboardList size={18} />
+
 
                             <select
 
@@ -383,13 +535,32 @@ function EditTaskModal({
 
                             >
 
-                                <option>Todo</option>
+                                <option>
 
-                                <option>In Progress</option>
+                                    Todo
 
-                                <option>Review</option>
+                                </option>
 
-                                <option>Completed</option>
+
+                                <option>
+
+                                    In Progress
+
+                                </option>
+
+
+                                <option>
+
+                                    Review
+
+                                </option>
+
+
+                                <option>
+
+                                    Completed
+
+                                </option>
 
                             </select>
 
@@ -397,7 +568,9 @@ function EditTaskModal({
 
                     </div>
 
+
                     <div></div>
+
 
                     <div className="task-modal-footer">
 
@@ -409,11 +582,14 @@ function EditTaskModal({
 
                             onClick={onClose}
 
+                            disabled={loading}
+
                         >
 
                             Cancel
 
                         </button>
+
 
                         <button
 
@@ -452,5 +628,6 @@ function EditTaskModal({
     );
 
 }
+
 
 export default EditTaskModal;

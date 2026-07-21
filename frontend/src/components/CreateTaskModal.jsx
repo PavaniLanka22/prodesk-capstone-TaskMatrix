@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import {
     AlignLeft,
     Calendar,
@@ -6,8 +7,11 @@ import {
     Flag,
     FolderKanban
 } from "lucide-react";
+
 import { useEffect, useState } from "react";
+
 import { toast } from "react-toastify";
+
 
 function CreateTaskModal({
 
@@ -21,9 +25,13 @@ function CreateTaskModal({
 
     const token = localStorage.getItem("token");
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
+
     const [projects, setProjects] = useState([]);
 
     const [loading, setLoading] = useState(false);
+
 
     const [task, setTask] = useState({
 
@@ -41,6 +49,7 @@ function CreateTaskModal({
 
     });
 
+
     useEffect(() => {
 
         if (open) {
@@ -51,13 +60,14 @@ function CreateTaskModal({
 
     }, [open]);
 
+
     const fetchProjects = async () => {
 
         try {
 
             const response = await axios.get(
 
-                "http://localhost:5000/api/projects",
+                `${API_URL}/api/projects`,
 
                 {
 
@@ -71,19 +81,39 @@ function CreateTaskModal({
 
             );
 
-            setProjects(response.data.projects);
+            setProjects(
+
+                response.data.projects || []
+
+            );
 
         }
 
         catch (error) {
 
-            console.log(error);
+            console.log(
+
+                "Error fetching projects:",
+
+                error.response?.data || error.message
+
+            );
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Unable to load projects."
+
+            );
 
         }
 
     };
 
+
     if (!open) return null;
+
 
     const handleChange = (e) => {
 
@@ -97,17 +127,19 @@ function CreateTaskModal({
 
     };
 
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
         setLoading(true);
 
+
         try {
 
             const response = await axios.post(
 
-                "http://localhost:5000/api/tasks",
+                `${API_URL}/api/tasks`,
 
                 task,
 
@@ -123,9 +155,20 @@ function CreateTaskModal({
 
             );
 
-            toast.success("Task created successfully!");
 
-            onTaskCreated(response.data.task);
+            toast.success(
+
+                "Task created successfully!"
+
+            );
+
+
+            onTaskCreated(
+
+                response.data.task
+
+            );
+
 
             setTask({
 
@@ -142,6 +185,7 @@ function CreateTaskModal({
                 project: ""
 
             });
+
 
             onClose();
 
@@ -167,16 +211,27 @@ function CreateTaskModal({
 
     };
 
+
     return (
 
         <div
+
             className="modal-overlay"
+
             onClick={onClose}
+
         >
 
             <div
+
                 className="task-modal"
-                onClick={(e) => e.stopPropagation()}
+
+                onClick={(e) =>
+
+                    e.stopPropagation()
+
+                }
+
             >
 
                 <div className="task-modal-header">
@@ -189,7 +244,11 @@ function CreateTaskModal({
 
                     <div>
 
-                        <h2>Create New Task</h2>
+                        <h2>
+
+                            Create New Task
+
+                        </h2>
 
                         <p>
 
@@ -201,14 +260,23 @@ function CreateTaskModal({
 
                 </div>
 
+
                 <form
+
                     className="task-form"
+
                     onSubmit={handleSubmit}
+
                 >
+
 
                     <div className="form-group">
 
-                        <label>Task Title</label>
+                        <label>
+
+                            Task Title
+
+                        </label>
 
                         <div className="input-icon">
 
@@ -234,9 +302,14 @@ function CreateTaskModal({
 
                     </div>
 
+
                     <div className="form-group">
 
-                        <label>Project</label>
+                        <label>
+
+                            Project
+
+                        </label>
 
                         <div className="input-icon">
 
@@ -260,23 +333,28 @@ function CreateTaskModal({
 
                                 </option>
 
+
                                 {
 
-                                    projects.map(project => (
+                                    projects.map(
 
-                                        <option
+                                        (project) => (
 
-                                            key={project._id}
+                                            <option
 
-                                            value={project._id}
+                                                key={project._id}
 
-                                        >
+                                                value={project._id}
 
-                                            {project.name}
+                                            >
 
-                                        </option>
+                                                {project.name}
 
-                                    ))
+                                            </option>
+
+                                        )
+
+                                    )
 
                                 }
 
@@ -286,9 +364,14 @@ function CreateTaskModal({
 
                     </div>
 
+
                     <div className="form-group full-width">
 
-                        <label>Description</label>
+                        <label>
+
+                            Description
+
+                        </label>
 
                         <div className="input-icon textarea-icon">
 
@@ -312,9 +395,14 @@ function CreateTaskModal({
 
                     </div>
 
+
                     <div className="form-group">
 
-                        <label>Due Date</label>
+                        <label>
+
+                            Due Date
+
+                        </label>
 
                         <div className="input-icon">
 
@@ -336,9 +424,14 @@ function CreateTaskModal({
 
                     </div>
 
+
                     <div className="form-group">
 
-                        <label>Priority</label>
+                        <label>
+
+                            Priority
+
+                        </label>
 
                         <div className="input-icon">
 
@@ -354,11 +447,23 @@ function CreateTaskModal({
 
                             >
 
-                                <option>Low</option>
+                                <option>
 
-                                <option>Medium</option>
+                                    Low
 
-                                <option>High</option>
+                                </option>
+
+                                <option>
+
+                                    Medium
+
+                                </option>
+
+                                <option>
+
+                                    High
+
+                                </option>
 
                             </select>
 
@@ -366,9 +471,14 @@ function CreateTaskModal({
 
                     </div>
 
+
                     <div className="form-group">
 
-                        <label>Status</label>
+                        <label>
+
+                            Status
+
+                        </label>
 
                         <div className="input-icon">
 
@@ -384,13 +494,29 @@ function CreateTaskModal({
 
                             >
 
-                                <option>Todo</option>
+                                <option>
 
-                                <option>In Progress</option>
+                                    Todo
 
-                                <option>Review</option>
+                                </option>
 
-                                <option>Completed</option>
+                                <option>
+
+                                    In Progress
+
+                                </option>
+
+                                <option>
+
+                                    Review
+
+                                </option>
+
+                                <option>
+
+                                    Completed
+
+                                </option>
 
                             </select>
 
@@ -398,7 +524,9 @@ function CreateTaskModal({
 
                     </div>
 
+
                     <div></div>
+
 
                     <div className="task-modal-footer">
 
@@ -415,6 +543,7 @@ function CreateTaskModal({
                             Cancel
 
                         </button>
+
 
                         <button
 
@@ -444,6 +573,7 @@ function CreateTaskModal({
 
                     </div>
 
+
                 </form>
 
             </div>
@@ -453,5 +583,6 @@ function CreateTaskModal({
     );
 
 }
+
 
 export default CreateTaskModal;

@@ -55,7 +55,7 @@ function Kanban() {
 
             const response = await axios.get(
 
-                "http://localhost:5000/api/tasks",
+                "https://prodesk-capstone-taskmatrix-9row.onrender.com/api/tasks",
 
                 {
 
@@ -69,13 +69,19 @@ function Kanban() {
 
             );
 
-            setTasks(response.data.tasks);
+            setTasks(response.data.tasks || []);
 
         }
 
         catch (error) {
 
-            console.log(error);
+            console.log(
+
+                "Failed to fetch tasks:",
+
+                error.response?.data || error.message
+
+            );
 
         }
 
@@ -119,11 +125,23 @@ function Kanban() {
 
         return tasks.filter(task => {
 
+            const title = task.title || "";
+
+            const description = task.description || "";
+
             const matchesSearch =
 
-                task.title.toLowerCase().includes(search.toLowerCase()) ||
+                title
 
-                task.description?.toLowerCase().includes(search.toLowerCase());
+                    .toLowerCase()
+
+                    .includes(search.toLowerCase()) ||
+
+                description
+
+                    .toLowerCase()
+
+                    .includes(search.toLowerCase());
 
             const matchesProject =
 
@@ -149,7 +167,17 @@ function Kanban() {
 
         });
 
-    }, [tasks, search, projectFilter, priorityFilter]);
+    }, [
+
+        tasks,
+
+        search,
+
+        projectFilter,
+
+        priorityFilter
+
+    ]);
 
     const todo = filteredTasks.filter(
 
@@ -191,7 +219,11 @@ function Kanban() {
 
                         <div>
 
-                            <h1>Kanban Board</h1>
+                            <h1>
+
+                                Kanban Board
+
+                            </h1>
 
                             <p>
 
@@ -205,7 +237,11 @@ function Kanban() {
 
                             className="new-task-btn"
 
-                            onClick={() => setShowCreateModal(true)}
+                            onClick={() =>
+
+                                setShowCreateModal(true)
+
+                            }
 
                         >
 
@@ -219,13 +255,25 @@ function Kanban() {
 
                         <div className="stats-card">
 
-                            <FaClipboardList className="stats-icon" />
+                            <FaClipboardList
+
+                                className="stats-icon"
+
+                            />
 
                             <div>
 
-                                <h3>Total Tasks</h3>
+                                <h3>
 
-                                <h2>{tasks.length}</h2>
+                                    Total Tasks
+
+                                </h3>
+
+                                <h2>
+
+                                    {tasks.length}
+
+                                </h2>
 
                             </div>
 
@@ -233,13 +281,25 @@ function Kanban() {
 
                         <div className="stats-card">
 
-                            <MdOutlineTaskAlt className="stats-icon purple" />
+                            <MdOutlineTaskAlt
+
+                                className="stats-icon purple"
+
+                            />
 
                             <div>
 
-                                <h3>Todo</h3>
+                                <h3>
 
-                                <h2>{todo.length}</h2>
+                                    Todo
+
+                                </h3>
+
+                                <h2>
+
+                                    {todo.length}
+
+                                </h2>
 
                             </div>
 
@@ -247,13 +307,25 @@ function Kanban() {
 
                         <div className="stats-card">
 
-                            <FaSpinner className="stats-icon warning" />
+                            <FaSpinner
+
+                                className="stats-icon warning"
+
+                            />
 
                             <div>
 
-                                <h3>In Progress</h3>
+                                <h3>
 
-                                <h2>{progress.length}</h2>
+                                    In Progress
+
+                                </h3>
+
+                                <h2>
+
+                                    {progress.length}
+
+                                </h2>
 
                             </div>
 
@@ -261,13 +333,25 @@ function Kanban() {
 
                         <div className="stats-card">
 
-                            <FaCheckCircle className="stats-icon success" />
+                            <FaCheckCircle
+
+                                className="stats-icon success"
+
+                            />
 
                             <div>
 
-                                <h3>Completed</h3>
+                                <h3>
 
-                                <h2>{completed.length}</h2>
+                                    Completed
+
+                                </h3>
+
+                                <h2>
+
+                                    {completed.length}
+
+                                </h2>
 
                             </div>
 
@@ -361,11 +445,23 @@ function Kanban() {
 
                             </option>
 
-                            <option>High</option>
+                            <option>
 
-                            <option>Medium</option>
+                                High
 
-                            <option>Low</option>
+                            </option>
+
+                            <option>
+
+                                Medium
+
+                            </option>
+
+                            <option>
+
+                                Low
+
+                            </option>
 
                         </select>
 
@@ -405,7 +501,11 @@ function Kanban() {
 
                                     onRefresh={fetchTasks}
 
-                                    onAdd={() => setShowCreateModal(true)}
+                                    onAdd={() =>
+
+                                        setShowCreateModal(true)
+
+                                    }
 
                                 />
 
@@ -427,7 +527,11 @@ function Kanban() {
 
                                     onRefresh={fetchTasks}
 
-                                    onAdd={() => setShowCreateModal(true)}
+                                    onAdd={() =>
+
+                                        setShowCreateModal(true)
+
+                                    }
 
                                 />
 
@@ -449,7 +553,11 @@ function Kanban() {
 
                                     onRefresh={fetchTasks}
 
-                                    onAdd={() => setShowCreateModal(true)}
+                                    onAdd={() =>
+
+                                        setShowCreateModal(true)
+
+                                    }
 
                                 />
 
@@ -471,7 +579,11 @@ function Kanban() {
 
                                     onRefresh={fetchTasks}
 
-                                    onAdd={() => setShowCreateModal(true)}
+                                    onAdd={() =>
+
+                                        setShowCreateModal(true)
+
+                                    }
 
                                 />
 
@@ -487,7 +599,11 @@ function Kanban() {
 
                 open={showCreateModal}
 
-                onClose={() => setShowCreateModal(false)}
+                onClose={() =>
+
+                    setShowCreateModal(false)
+
+                }
 
                 onTaskCreated={fetchTasks}
 

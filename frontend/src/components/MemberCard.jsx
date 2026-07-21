@@ -18,16 +18,70 @@ function MemberCard({
 
 }) {
 
-    const initials = member.name
-        ?.split(" ")
-        .map(word => word[0])
-        .join("")
-        .substring(0,2)
-        .toUpperCase();
+    const initials =
+
+        member.name
+
+            ?.split(" ")
+
+            .map(word =>
+                word[0]
+            )
+
+            .join("")
+
+            .substring(0, 2)
+
+            .toUpperCase();
+
+
+    /*
+    ==========================================================
+    NORMALIZE STATUS
+
+    This ensures:
+
+    Online
+    online
+    ONLINE
+    " Online "
+
+    all become Online.
+
+    Everything else becomes Offline.
+    ==========================================================
+    */
+
+    const normalizedStatus =
+
+        String(
+            member.status || "Offline"
+        )
+
+            .trim()
+
+            .toLowerCase();
+
+
+    const isOnline =
+        normalizedStatus === "online";
+
+
+    const displayStatus =
+        isOnline
+            ? "Online"
+            : "Offline";
+
+
+    /*
+    ==========================================================
+    ROLE CLASS
+    ==========================================================
+    */
 
     const roleClass = () => {
 
-        switch(member.role){
+        switch (member.role) {
 
             case "Admin":
 
@@ -53,21 +107,30 @@ function MemberCard({
 
     };
 
+
     return (
 
         <div className="member-card">
 
+
+            {/* TOP */}
+
             <div className="member-top">
+
 
                 <div className="member-avatar">
 
-                    {initials}
+                    {initials || "U"}
 
                 </div>
 
+
                 <div className="member-actions">
 
+
                     <button
+
+                        type="button"
 
                         className="member-icon-btn"
 
@@ -77,11 +140,14 @@ function MemberCard({
 
                     >
 
-                        <FiEdit2/>
+                        <FiEdit2 />
 
                     </button>
 
+
                     <button
+
+                        type="button"
 
                         className="member-icon-btn delete"
 
@@ -91,83 +157,122 @@ function MemberCard({
 
                     >
 
-                        <FiTrash2/>
+                        <FiTrash2 />
 
                     </button>
 
+
                 </div>
 
+
             </div>
+
+
+            {/* DETAILS */}
 
             <div className="member-details">
 
+
                 <h3>
 
-                    {member.name}
+                    {member.name || "Unknown Member"}
 
                 </h3>
 
+
                 <p className="member-department">
 
-                    {member.department}
+                    {member.department ||
+                        "No department"}
 
                 </p>
 
+
             </div>
+
+
+            {/* EMAIL */}
 
             <div className="member-email">
 
-                <FiMail/>
+
+                <FiMail />
+
 
                 <span>
 
-                    {member.email}
+                    {member.email ||
+                        "No email"}
 
                 </span>
+
 
             </div>
 
+
+            {/* BADGES */}
+
             <div className="member-badges">
+
+
+                {/* ROLE */}
 
                 <span className={roleClass()}>
 
-                    {member.role}
+                    {member.role ||
+                        "Viewer"}
 
                 </span>
+
+
+                {/* STATUS */}
 
                 <span
 
                     className={
 
-                        member.status==="Online"
+                        isOnline
 
-                        ?
+                            ? "member-status online"
 
-                        "member-status online"
-
-                        :
-
-                        "member-status offline"
+                            : "member-status offline"
 
                     }
 
                 >
 
+
                     <span className="status-dot"></span>
 
-                    {member.status}
+
+                    <span>
+
+                        {displayStatus}
+
+                    </span>
+
 
                 </span>
 
+
             </div>
+
+
+            {/* DIVIDER */}
 
             <div className="member-divider"></div>
 
+
+            {/* FOOTER */}
+
             <div className="member-footer">
+
 
                 <div className="member-profile">
 
-                    <FaUserCircle/>
+
+                    <FaUserCircle />
+
 
                     <span>
 
@@ -175,9 +280,12 @@ function MemberCard({
 
                     </span>
 
+
                 </div>
 
+
             </div>
+
 
         </div>
 

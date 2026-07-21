@@ -12,45 +12,67 @@ import DeleteMemberModal from "../components/DeleteMemberModal";
 
 import {
     FiSearch,
-    FiUsers
+    FiUsers,
 } from "react-icons/fi";
 
 import {
     FaUserFriends,
-    FaUserShield
+    FaUserShield,
 } from "react-icons/fa";
 
 import {
-    MdOutlinePersonAddAlt1
+    MdOutlinePersonAddAlt1,
 } from "react-icons/md";
 
 import "../styles/teams.css";
 
+
 function Teams() {
 
-    const token = localStorage.getItem("token");
+    // ==================================================
+    // API URL
+    // ==================================================
 
-    const [members, setMembers] = useState([]);
+    const API_URL =
+        import.meta.env.VITE_API_URL;
 
-    const [loading, setLoading] = useState(true);
 
-    const [search, setSearch] = useState("");
+    const token =
+        localStorage.getItem("token");
 
-    const [roleFilter, setRoleFilter] = useState("All");
 
-    const [showInvite, setShowInvite] = useState(false);
+    // ==================================================
+    // STATE
+    // ==================================================
 
-    const [showEdit, setShowEdit] = useState(false);
+    const [members, setMembers] =
+        useState([]);
 
-    const [showDelete, setShowDelete] = useState(false);
+    const [loading, setLoading] =
+        useState(true);
 
-    const [selectedMember, setSelectedMember] = useState(null);
+    const [search, setSearch] =
+        useState("");
 
-    useEffect(() => {
+    const [roleFilter, setRoleFilter] =
+        useState("All");
 
-        fetchMembers();
+    const [showInvite, setShowInvite] =
+        useState(false);
 
-    }, []);
+    const [showEdit, setShowEdit] =
+        useState(false);
+
+    const [showDelete, setShowDelete] =
+        useState(false);
+
+    const [selectedMember, setSelectedMember] =
+        useState(null);
+
+
+    // ==================================================
+    // FETCH MEMBERS
+    // ==================================================
 
     const fetchMembers = async () => {
 
@@ -58,95 +80,52 @@ function Teams() {
 
             setLoading(true);
 
-            const response = await axios.get(
 
-                "http://localhost:5000/api/users",
+            const response =
+                await axios.get(
 
-                {
+                    `${API_URL}/api/users`,
 
-                    headers: {
+                    {
 
-                        Authorization: `Bearer ${token}`
+                        headers: {
+
+                            Authorization:
+                                `Bearer ${token}`,
+
+                        },
 
                     }
 
-                }
+                );
+
+
+            setMembers(
+
+                response.data.users || []
 
             );
 
-            setMembers(response.data.users || []);
-
         }
 
-        catch {
+        catch (error) {
 
-            setMembers([
+            console.error(
 
-                {
+                "Failed to fetch members:",
 
-                    _id: 1,
+                error
 
-                    name: "Pavani Lanka",
+            );
 
-                    email: "pavani@email.com",
 
-                    role: "Admin",
+            toast.error(
 
-                    department: "Engineering",
+                error.response?.data?.message ||
 
-                    status: "Online"
+                "Failed to load team members."
 
-                },
-
-                {
-
-                    _id: 2,
-
-                    name: "Rahul Sharma",
-
-                    email: "rahul@email.com",
-
-                    role: "Developer",
-
-                    department: "Frontend",
-
-                    status: "Offline"
-
-                },
-
-                {
-
-                    _id: 3,
-
-                    name: "Anjali Patel",
-
-                    email: "anjali@email.com",
-
-                    role: "Tester",
-
-                    department: "QA",
-
-                    status: "Online"
-
-                },
-
-                {
-
-                    _id: 4,
-
-                    name: "John David",
-
-                    email: "john@email.com",
-
-                    role: "Manager",
-
-                    department: "Management",
-
-                    status: "Online"
-
-                }
-
-            ]);
+            );
 
         }
 
@@ -158,15 +137,49 @@ function Teams() {
 
     };
 
+
+    // ==================================================
+    // LOAD MEMBERS ON PAGE LOAD
+    // ==================================================
+
+    useEffect(() => {
+
+        fetchMembers();
+
+    }, []);
+
+
+    // ==================================================
+    // FILTER MEMBERS
+    // ==================================================
+
     const filteredMembers = useMemo(() => {
 
         return members.filter(member => {
 
+            const memberName =
+                member.name || "";
+
+            const memberEmail =
+                member.email || "";
+
+
+            const searchValue =
+                search.toLowerCase();
+
+
             const searchMatch =
 
-                member.name.toLowerCase().includes(search.toLowerCase()) ||
+                memberName
+                    .toLowerCase()
+                    .includes(searchValue)
 
-                member.email.toLowerCase().includes(search.toLowerCase());
+                ||
+
+                memberEmail
+                    .toLowerCase()
+                    .includes(searchValue);
+
 
             const roleMatch =
 
@@ -176,29 +189,68 @@ function Teams() {
 
                     : member.role === roleFilter;
 
-            return searchMatch && roleMatch;
+
+            return (
+
+                searchMatch &&
+
+                roleMatch
+
+            );
 
         });
 
-    }, [members, search, roleFilter]);
+    }, [
 
-    const admins = members.filter(
+        members,
 
-        member => member.role === "Admin"
+        search,
 
-    ).length;
+        roleFilter,
 
-    const developers = members.filter(
+    ]);
 
-        member => member.role === "Developer"
 
-    ).length;
+    // ==================================================
+    // STATISTICS
+    // ==================================================
 
-    const online = members.filter(
+    const admins =
 
-        member => member.status === "Online"
+        members.filter(
 
-    ).length;
+            member =>
+
+                member.role === "Admin"
+
+        ).length;
+
+
+    const developers =
+
+        members.filter(
+
+            member =>
+
+                member.role === "Developer"
+
+        ).length;
+
+
+    const online =
+
+        members.filter(
+
+            member =>
+
+                member.status === "Online"
+
+        ).length;
+
+
+    // ==================================================
+    // OPEN EDIT
+    // ==================================================
 
     const openEditModal = (member) => {
 
@@ -208,6 +260,11 @@ function Teams() {
 
     };
 
+
+    // ==================================================
+    // OPEN DELETE
+    // ==================================================
+
     const openDeleteModal = (member) => {
 
         setSelectedMember(member);
@@ -216,287 +273,605 @@ function Teams() {
 
     };
 
-    const updateMember = (updatedMember) => {
 
-        setMembers(
+    // ==================================================
+    // UPDATE MEMBER
+    // THIS NOW SAVES TO MONGODB
+    // ==================================================
 
-            members.map(member =>
+    const updateMember = async (updatedMember) => {
 
-                member._id === updatedMember._id
+        try {
 
-                    ? updatedMember
+            const response =
 
-                    : member
+                await axios.put(
 
-            )
-
-        );
-
-        toast.success("Member updated");
-
-    };
-
-    const deleteMember = () => {
-
-        setMembers(
-
-            members.filter(
-
-                member =>
-
-                    member._id !== selectedMember._id
-
-            )
-
-        );
-
-        toast.success("Member removed");
-
-        setShowDelete(false);
-
-        setSelectedMember(null);
-
-    };
-
-    const inviteMember = (member) => {
-
-        setMembers([
-
-            ...members,
-
-            {
-
-                ...member,
-
-                _id: Date.now()
-
-            }
-
-        ]);
-
-        toast.success("Member invited");
-
-    };
-
-    
-return (
-
-<div className="dashboard-container">
-
-    <Sidebar />
-
-    <div className="main-content">
-
-        <Navbar />
-
-        <div className="teams-page">
-
-            <div className="page-header">
-
-                <div>
-
-                    <h1>Team Management</h1>
-
-                    <p>
-                        Manage your workspace members, roles and collaboration.
-                    </p>
-
-                </div>
-
-                <button
-
-                    className="new-member-btn"
-
-                    onClick={() => setShowInvite(true)}
-
-                >
-
-                    + Invite Member
-
-                </button>
-
-            </div>
-
-            <div className="team-stats">
-
-                <div className="team-stat-card">
-
-                    <FiUsers className="team-stat-icon"/>
-
-                    <div>
-
-                        <h4>Total Members</h4>
-
-                        <h2>{members.length}</h2>
-
-                    </div>
-
-                </div>
-
-                <div className="team-stat-card">
-
-                    <FaUserShield className="team-stat-icon purple"/>
-
-                    <div>
-
-                        <h4>Administrators</h4>
-
-                        <h2>{admins}</h2>
-
-                    </div>
-
-                </div>
-
-                <div className="team-stat-card">
-
-                    <FaUserFriends className="team-stat-icon green"/>
-
-                    <div>
-
-                        <h4>Developers</h4>
-
-                        <h2>{developers}</h2>
-
-                    </div>
-
-                </div>
-
-                <div className="team-stat-card">
-
-                    <MdOutlinePersonAddAlt1 className="team-stat-icon orange"/>
-
-                    <div>
-
-                        <h4>Active Today</h4>
-
-                        <h2>{online}</h2>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div className="team-toolbar">
-
-                <div className="search-box">
-
-                    <FiSearch />
-
-                    <input
-
-                        type="text"
-
-                        placeholder="Search by name or email..."
-
-                        value={search}
-
-                        onChange={(e)=>setSearch(e.target.value)}
-
-                    />
-
-                </div>
-
-                <select
-
-                    className="toolbar-select"
-
-                    value={roleFilter}
-
-                    onChange={(e)=>setRoleFilter(e.target.value)}
-
-                >
-
-                    <option value="All">All Roles</option>
-
-                    <option value="Admin">Admin</option>
-
-                    <option value="Manager">Manager</option>
-
-                    <option value="Developer">Developer</option>
-
-                    <option value="Tester">Tester</option>
-
-                </select>
-
-            </div>
-
-            {
-
-                loading
-
-                ?
-
-                <div className="loading-state">
-
-                    Loading Members...
-
-                </div>
-
-                :
-
-                filteredMembers.length===0
-
-                ?
-
-                <div className="team-empty">
-
-                    <div className="team-empty-icon">
-
-                        👥
-
-                    </div>
-
-                    <h2>No Members Found</h2>
-
-                    <p>
-
-                        Try changing your search or invite a new member.
-
-                    </p>
-
-                </div>
-
-                :
-
-                <div className="member-grid">
+                    `${API_URL}/api/users/${updatedMember._id}`,
 
                     {
 
-                        filteredMembers.map(member=>(
+                        name:
+                            updatedMember.name,
 
-                            <MemberCard
+                        email:
+                            updatedMember.email,
 
-                                key={member._id}
+                        role:
+                            updatedMember.role,
 
-                                member={member}
+                        department:
+                            updatedMember.department,
 
-                                onEdit={() => openEditModal(member)}
+                        status:
+                            updatedMember.status,
 
-                                onDelete={() => openDeleteModal(member)}
+                    },
+
+                    {
+
+                        headers: {
+
+                            Authorization:
+                                `Bearer ${token}`,
+
+                        },
+
+                    }
+
+                );
+
+
+            const savedMember =
+                response.data.user;
+
+
+            // ------------------------------------------
+            // UPDATE REACT STATE WITH DATABASE RESPONSE
+            // ------------------------------------------
+
+            setMembers(
+
+                previousMembers =>
+
+                    previousMembers.map(
+
+                        member =>
+
+                            member._id ===
+                            savedMember._id
+
+                                ? savedMember
+
+                                : member
+
+                    )
+
+            );
+
+
+            toast.success(
+
+                "Member updated successfully."
+
+            );
+
+
+            // ------------------------------------------
+            // CLOSE MODAL
+            // ------------------------------------------
+
+            setShowEdit(false);
+
+            setSelectedMember(null);
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+
+                "Failed to update member:",
+
+                error
+
+            );
+
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Failed to update member."
+
+            );
+
+        }
+
+    };
+
+
+    // ==================================================
+    // DELETE MEMBER
+    // ==================================================
+
+    const deleteMember = async () => {
+
+        if (!selectedMember) {
+
+            return;
+
+        }
+
+
+        try {
+
+            await axios.delete(
+
+                `${API_URL}/api/users/${selectedMember._id}`,
+
+                {
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${token}`,
+
+                    },
+
+                }
+
+            );
+
+
+            setMembers(
+
+                previousMembers =>
+
+                    previousMembers.filter(
+
+                        member =>
+
+                            member._id !==
+                            selectedMember._id
+
+                    )
+
+            );
+
+
+            toast.success(
+
+                "Member removed successfully."
+
+            );
+
+
+            setShowDelete(false);
+
+            setSelectedMember(null);
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+
+                "Failed to delete member:",
+
+                error
+
+            );
+
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Failed to delete member."
+
+            );
+
+        }
+
+    };
+
+
+    // ==================================================
+    // INVITE MEMBER
+    // ==================================================
+
+    const inviteMember = (member) => {
+
+        setMembers(
+
+            previousMembers => [
+
+                ...previousMembers,
+
+                {
+
+                    ...member,
+
+                    _id: Date.now(),
+
+                },
+
+            ]
+
+        );
+
+
+        toast.success(
+
+            "Member invited successfully."
+
+        );
+
+    };
+
+
+    // ==================================================
+    // RENDER
+    // ==================================================
+
+    return (
+
+        <div className="dashboard-container">
+
+            <Sidebar />
+
+
+            <div className="main-content">
+
+                <Navbar />
+
+
+                <div className="teams-page">
+
+
+                    {/* HEADER */}
+
+                    <div className="page-header">
+
+                        <div>
+
+                            <h1>
+
+                                Team Management
+
+                            </h1>
+
+
+                            <p>
+
+                                Manage your workspace members, roles and collaboration.
+
+                            </p>
+
+                        </div>
+
+
+                        <button
+
+                            className="new-member-btn"
+
+                            onClick={() =>
+                                setShowInvite(true)
+                            }
+
+                        >
+
+                            + Invite Member
+
+                        </button>
+
+                    </div>
+
+
+                    {/* STATISTICS */}
+
+                    <div className="team-stats">
+
+
+                        <div className="team-stat-card">
+
+                            <FiUsers className="team-stat-icon" />
+
+                            <div>
+
+                                <h4>
+
+                                    Total Members
+
+                                </h4>
+
+
+                                <h2>
+
+                                    {members.length}
+
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="team-stat-card">
+
+                            <FaUserShield className="team-stat-icon purple" />
+
+                            <div>
+
+                                <h4>
+
+                                    Administrators
+
+                                </h4>
+
+
+                                <h2>
+
+                                    {admins}
+
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="team-stat-card">
+
+                            <FaUserFriends className="team-stat-icon green" />
+
+                            <div>
+
+                                <h4>
+
+                                    Developers
+
+                                </h4>
+
+
+                                <h2>
+
+                                    {developers}
+
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="team-stat-card">
+
+                            <MdOutlinePersonAddAlt1 className="team-stat-icon orange" />
+
+                            <div>
+
+                                <h4>
+
+                                    Active Today
+
+                                </h4>
+
+
+                                <h2>
+
+                                    {online}
+
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    {/* TOOLBAR */}
+
+                    <div className="team-toolbar">
+
+
+                        <div className="search-box">
+
+                            <FiSearch />
+
+
+                            <input
+
+                                type="text"
+
+                                placeholder="Search by name or email..."
+
+                                value={search}
+
+                                onChange={(e) =>
+                                    setSearch(
+                                        e.target.value
+                                    )
+                                }
 
                             />
 
-                        ))
+                        </div>
+
+
+                        <select
+
+                            className="toolbar-select"
+
+                            value={roleFilter}
+
+                            onChange={(e) =>
+                                setRoleFilter(
+                                    e.target.value
+                                )
+                            }
+
+                        >
+
+                            <option value="All">
+
+                                All Roles
+
+                            </option>
+
+                            <option value="Admin">
+
+                                Admin
+
+                            </option>
+
+                            <option value="Manager">
+
+                                Manager
+
+                            </option>
+
+                            <option value="Developer">
+
+                                Developer
+
+                            </option>
+
+                            <option value="Tester">
+
+                                Tester
+
+                            </option>
+
+                            <option value="Viewer">
+
+                                Viewer
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    {/* MEMBERS */}
+
+                    {
+
+                        loading
+
+                            ?
+
+                            (
+
+                                <div className="loading-state">
+
+                                    Loading Members...
+
+                                </div>
+
+                            )
+
+                            :
+
+                            filteredMembers.length === 0
+
+                                ?
+
+                                (
+
+                                    <div className="team-empty">
+
+                                        <div className="team-empty-icon">
+
+                                            👥
+
+                                        </div>
+
+
+                                        <h2>
+
+                                            No Members Found
+
+                                        </h2>
+
+
+                                        <p>
+
+                                            Try changing your search or invite a new member.
+
+                                        </p>
+
+                                    </div>
+
+                                )
+
+                                :
+
+                                (
+
+                                    <div className="member-grid">
+
+                                        {
+
+                                            filteredMembers.map(
+
+                                                member => (
+
+                                                    <MemberCard
+
+                                                        key={
+                                                            member._id
+                                                        }
+
+                                                        member={
+                                                            member
+                                                        }
+
+                                                        onEdit={() =>
+                                                            openEditModal(
+                                                                member
+                                                            )
+                                                        }
+
+                                                        onDelete={() =>
+                                                            openDeleteModal(
+                                                                member
+                                                            )
+                                                        }
+
+                                                    />
+
+                                                )
+
+                                            )
+
+                                        }
+
+                                    </div>
+
+                                )
 
                     }
 
                 </div>
 
-            }
+            </div>
 
-        </div>
 
-    </div>
+            {/* INVITE */}
 
-                        <InviteMemberModal
+            <InviteMemberModal
 
                 open={showInvite}
 
                 onClose={() =>
-
                     setShowInvite(false)
-
                 }
 
                 onInvite={(member) => {
@@ -508,6 +883,9 @@ return (
                 }}
 
             />
+
+
+            {/* EDIT */}
 
             <EditMemberModal
 
@@ -523,17 +901,12 @@ return (
 
                 }}
 
-                onSave={(updatedMember) => {
-
-                    updateMember(updatedMember);
-
-                    setShowEdit(false);
-
-                    setSelectedMember(null);
-
-                }}
+                onSave={updateMember}
 
             />
+
+
+            {/* DELETE */}
 
             <DeleteMemberModal
 
@@ -553,10 +926,12 @@ return (
 
             />
 
+
         </div>
 
     );
 
 }
+
 
 export default Teams;

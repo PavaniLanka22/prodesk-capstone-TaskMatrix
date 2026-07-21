@@ -1,116 +1,264 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import { loginUser } from "../services/authService";
 
+
 function Login() {
-  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+    const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+        email: "",
+
+        password: ""
+
     });
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const [loading, setLoading] = useState(false);
 
-    setLoading(true);
 
-    try {
-const data = await loginUser(formData);
+    const handleChange = (e) => {
 
-console.log("LOGIN RESPONSE:", data);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+        setFormData({
 
-      alert("Login Successful!");
+            ...formData,
 
-      navigate("/dashboard");
-    } catch (error) {
-      alert(error.response?.data?.message || "Login Failed");
-    }
+            [e.target.name]: e.target.value
 
-    setLoading(false);
-  };
+        });
 
-  return (
-    <div className="login-container">
+    };
 
-      <div className="login-card">
 
-        <img
-          src="/kanban.svg"
-          alt="TaskMatrix"
-          className="logo-image"
-        />
+    const handleSubmit = async (e) => {
 
-        <h1 className="logo-title">
-          TaskMatrix
-        </h1>
+        e.preventDefault();
 
-        <h2>Welcome Back</h2>
+        setLoading(true);
 
-        <p className="subtitle">
-          Sign in to continue managing your projects.
-        </p>
+        try {
 
-        <form onSubmit={handleSubmit}>
+            const data = await loginUser(formData);
 
-          <label>Email</label>
+            console.log(
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+                "LOGIN RESPONSE:",
 
-          <label>Password</label>
+                data
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+            );
 
-          <button type="submit">
 
-            {loading ? "Logging in..." : "LOGIN"}
+            localStorage.setItem(
 
-          </button>
+                "token",
 
-          <p className="register-text">
+                data.token
 
-            Don't have an account?
+            );
 
-            <Link
-              to="/register"
-              className="register-link"
-            >
-              Register
-            </Link>
 
-          </p>
+            localStorage.setItem(
 
-        </form>
+                "user",
 
-      </div>
+                JSON.stringify(data.user)
 
-    </div>
-  );
+            );
+
+
+            alert(
+
+                "Login Successful!"
+
+            );
+
+
+            navigate(
+
+                "/dashboard"
+
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+
+                "LOGIN ERROR:",
+
+                error
+
+            );
+
+
+            alert(
+
+                error.response?.data?.message ||
+
+                "Login Failed"
+
+            );
+
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+
+    return (
+
+        <div className="login-container">
+
+            <div className="login-card">
+
+
+                <img
+
+                    src="/kanban.svg"
+
+                    alt="TaskMatrix"
+
+                    className="logo-image"
+
+                />
+
+
+                <h1 className="logo-title">
+
+                    TaskMatrix
+
+                </h1>
+
+
+                <h2>
+
+                    Welcome Back
+
+                </h2>
+
+
+                <p className="subtitle">
+
+                    Sign in to continue managing your projects.
+
+                </p>
+
+
+                <form
+
+                    onSubmit={handleSubmit}
+
+                >
+
+
+                    <label>
+
+                        Email
+
+                    </label>
+
+
+                    <input
+
+                        type="email"
+
+                        name="email"
+
+                        placeholder="Enter your email"
+
+                        value={formData.email}
+
+                        onChange={handleChange}
+
+                        required
+
+                    />
+
+
+                    <label>
+
+                        Password
+
+                    </label>
+
+
+                    <input
+
+                        type="password"
+
+                        name="password"
+
+                        placeholder="Enter your password"
+
+                        value={formData.password}
+
+                        onChange={handleChange}
+
+                        required
+
+                    />
+
+
+                    <button
+
+                        type="submit"
+
+                        disabled={loading}
+
+                    >
+
+                        {
+
+                            loading
+
+                                ? "Logging in..."
+
+                                : "LOGIN"
+
+                        }
+
+                    </button>
+
+
+                    <p className="register-text">
+
+                        Don't have an account?
+
+
+                        <Link
+
+                            to="/register"
+
+                            className="register-link"
+
+                        >
+
+                            Register
+
+                        </Link>
+
+                    </p>
+
+
+                </form>
+
+
+            </div>
+
+        </div>
+
+    );
+
 }
+
 
 export default Login;

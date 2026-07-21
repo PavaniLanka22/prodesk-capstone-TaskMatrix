@@ -1,6 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+
+import {
+    useEffect,
+    useState
+} from "react";
+
+import {
+    toast
+} from "react-toastify";
+
 
 function EditProjectModal({
 
@@ -13,6 +21,9 @@ function EditProjectModal({
     onProjectUpdated
 
 }) {
+
+    const API_URL = import.meta.env.VITE_API_URL;
+
 
     const [formData, setFormData] = useState({
 
@@ -28,6 +39,7 @@ function EditProjectModal({
 
     });
 
+
     useEffect(() => {
 
         if (project) {
@@ -36,15 +48,22 @@ function EditProjectModal({
 
                 name: project.name || "",
 
-                description: project.description || "",
+                description:
+                    project.description || "",
 
-                category: project.category || "Full Stack",
+                category:
+                    project.category || "Full Stack",
 
-                dueDate: project.dueDate
-                    ? project.dueDate.substring(0,10)
-                    : "",
+                dueDate:
 
-                progress: project.progress || 0
+                    project.dueDate
+
+                        ? project.dueDate.substring(0, 10)
+
+                        : "",
+
+                progress:
+                    project.progress || 0
 
             });
 
@@ -52,7 +71,9 @@ function EditProjectModal({
 
     }, [project]);
 
+
     if (!open) return null;
+
 
     const handleChange = (e) => {
 
@@ -60,21 +81,29 @@ function EditProjectModal({
 
             ...formData,
 
-            [e.target.name]: e.target.value
+            [e.target.name]:
+
+                e.target.name === "progress"
+
+                    ? Number(e.target.value)
+
+                    : e.target.value
 
         });
 
     };
 
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
+
 
         try {
 
             const response = await axios.put(
 
-                `http://localhost:5000/api/projects/${project._id}`,
+                `${API_URL}/api/projects/${project._id}`,
 
                 formData,
 
@@ -83,7 +112,8 @@ function EditProjectModal({
                     headers: {
 
                         Authorization:
-                        `Bearer ${localStorage.getItem("token")}`
+
+                            `Bearer ${localStorage.getItem("token")}`
 
                     }
 
@@ -91,37 +121,82 @@ function EditProjectModal({
 
             );
 
-            onProjectUpdated(response.data.project);
 
-            toast.success("Project updated successfully!");
+            if (onProjectUpdated) {
+
+                onProjectUpdated(
+
+                    response.data.project
+
+                );
+
+            }
+
+
+            toast.success(
+
+                "Project updated successfully!"
+
+            );
+
 
             onClose();
 
         }
 
+
         catch (error) {
 
-            console.log(error);
+            console.error(
 
-            toast.error("Failed to update project.");
+                "Update project error:",
+
+                error
+
+            );
+
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Failed to update project."
+
+            );
 
         }
 
     };
 
+
     return (
 
         <div
+
             className="modal-overlay"
+
             onClick={onClose}
+
         >
 
             <div
+
                 className="modal"
-                onClick={(e)=>e.stopPropagation()}
+
+                onClick={(e) =>
+
+                    e.stopPropagation()
+
+                }
+
             >
 
-                <h2>Edit Project</h2>
+                <h2>
+
+                    Edit Project
+
+                </h2>
+
 
                 <p className="modal-subtitle">
 
@@ -129,9 +204,19 @@ function EditProjectModal({
 
                 </p>
 
-                <form onSubmit={handleSubmit}>
 
-                    <label>Project Name</label>
+                <form
+
+                    onSubmit={handleSubmit}
+
+                >
+
+                    <label>
+
+                        Project Name
+
+                    </label>
+
 
                     <input
 
@@ -145,7 +230,13 @@ function EditProjectModal({
 
                     />
 
-                    <label>Description</label>
+
+                    <label>
+
+                        Description
+
+                    </label>
+
 
                     <textarea
 
@@ -159,7 +250,13 @@ function EditProjectModal({
 
                     />
 
-                    <label>Category</label>
+
+                    <label>
+
+                        Category
+
+                    </label>
+
 
                     <select
 
@@ -171,17 +268,42 @@ function EditProjectModal({
 
                     >
 
-                        <option>Frontend</option>
+                        <option value="Frontend">
 
-                        <option>Backend</option>
+                            Frontend
 
-                        <option>Full Stack</option>
+                        </option>
 
-                        <option>Mobile</option>
+
+                        <option value="Backend">
+
+                            Backend
+
+                        </option>
+
+
+                        <option value="Full Stack">
+
+                            Full Stack
+
+                        </option>
+
+
+                        <option value="Mobile">
+
+                            Mobile
+
+                        </option>
 
                     </select>
 
-                    <label>Due Date</label>
+
+                    <label>
+
+                        Due Date
+
+                    </label>
+
 
                     <input
 
@@ -195,7 +317,13 @@ function EditProjectModal({
 
                     />
 
-                    <label>Progress (%)</label>
+
+                    <label>
+
+                        Progress (%)
+
+                    </label>
+
 
                     <input
 
@@ -213,6 +341,7 @@ function EditProjectModal({
 
                     />
 
+
                     <div className="modal-buttons">
 
                         <button
@@ -228,6 +357,7 @@ function EditProjectModal({
                             Cancel
 
                         </button>
+
 
                         <button
 
@@ -252,5 +382,6 @@ function EditProjectModal({
     );
 
 }
+
 
 export default EditProjectModal;
