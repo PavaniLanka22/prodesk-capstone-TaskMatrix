@@ -21,45 +21,17 @@ function MemberCard({
     const initials =
 
         member.name
-
             ?.split(" ")
-
-            .map(word =>
-                word[0]
-            )
-
+            .map(word => word[0])
             .join("")
-
             .substring(0, 2)
-
             .toUpperCase();
 
 
-    /*
-    ==========================================================
-    NORMALIZE STATUS
-
-    This ensures:
-
-    Online
-    online
-    ONLINE
-    " Online "
-
-    all become Online.
-
-    Everything else becomes Offline.
-    ==========================================================
-    */
-
     const normalizedStatus =
 
-        String(
-            member.status || "Offline"
-        )
-
+        String(member.status || "Offline")
             .trim()
-
             .toLowerCase();
 
 
@@ -73,34 +45,23 @@ function MemberCard({
             : "Offline";
 
 
-    /*
-    ==========================================================
-    ROLE CLASS
-    ==========================================================
-    */
-
     const roleClass = () => {
 
         switch (member.role) {
 
             case "Admin":
-
                 return "role admin";
 
             case "Manager":
-
                 return "role manager";
 
             case "Developer":
-
                 return "role developer";
 
             case "Tester":
-
                 return "role tester";
 
             default:
-
                 return "role viewer";
 
         }
@@ -112,11 +73,9 @@ function MemberCard({
 
         <div className="member-card">
 
+            {/* ================= MEMBER ================= */}
 
-            {/* TOP */}
-
-            <div className="member-top">
-
+            <div className="member-left">
 
                 <div className="member-avatar">
 
@@ -124,108 +83,56 @@ function MemberCard({
 
                 </div>
 
+                <div className="member-info">
 
-                <div className="member-actions">
+                    <h3 className="member-name">
 
+                        {member.name || "Unknown Member"}
 
-                    <button
+                    </h3>
 
-                        type="button"
+                    <p className="member-department">
 
-                        className="member-icon-btn"
+                        {member.department || "No Department"}
 
-                        onClick={onEdit}
-
-                        title="Edit Member"
-
-                    >
-
-                        <FiEdit2 />
-
-                    </button>
-
-
-                    <button
-
-                        type="button"
-
-                        className="member-icon-btn delete"
-
-                        onClick={onDelete}
-
-                        title="Delete Member"
-
-                    >
-
-                        <FiTrash2 />
-
-                    </button>
-
+                    </p>
 
                 </div>
 
-
             </div>
 
 
-            {/* DETAILS */}
-
-            <div className="member-details">
-
-
-                <h3>
-
-                    {member.name || "Unknown Member"}
-
-                </h3>
-
-
-                <p className="member-department">
-
-                    {member.department ||
-                        "No department"}
-
-                </p>
-
-
-            </div>
-
-
-            {/* EMAIL */}
+            {/* ================= EMAIL ================= */}
 
             <div className="member-email">
 
-
                 <FiMail />
-
 
                 <span>
 
-                    {member.email ||
-                        "No email"}
+                    {member.email || "No Email"}
 
                 </span>
-
 
             </div>
 
 
-            {/* BADGES */}
+            {/* ================= ROLE ================= */}
 
-            <div className="member-badges">
-
-
-                {/* ROLE */}
+            <div className="member-role-column">
 
                 <span className={roleClass()}>
 
-                    {member.role ||
-                        "Viewer"}
+                    {member.role || "Viewer"}
 
                 </span>
 
+            </div>
 
-                {/* STATUS */}
+
+            {/* ================= STATUS ================= */}
+
+            <div className="member-status-column">
 
                 <span
 
@@ -241,51 +148,67 @@ function MemberCard({
 
                 >
 
-
                     <span className="status-dot"></span>
 
-
-                    <span>
-
-                        {displayStatus}
-
-                    </span>
-
+                    {displayStatus}
 
                 </span>
 
+            </div>
+
+
+            {/* ================= WORKSPACE ================= */}
+
+            <div className="member-access">
+
+                <FaUserCircle />
+
+                <span>
+
+                    Workspace Member
+
+                </span>
 
             </div>
 
 
-            {/* DIVIDER */}
+            {/* ================= ACTIONS ================= */}
 
-            <div className="member-divider"></div>
+            <div className="member-actions">
 
+                <button
 
-            {/* FOOTER */}
+                    type="button"
 
-            <div className="member-footer">
+                    className="member-icon-btn"
 
+                    onClick={onEdit}
 
-                <div className="member-profile">
+                    title="Edit Member"
 
+                >
 
-                    <FaUserCircle />
+                    <FiEdit2 />
 
+                </button>
 
-                    <span>
+                <button
 
-                        Workspace Member
+                    type="button"
 
-                    </span>
+                    className="member-icon-btn delete"
 
+                    onClick={onDelete}
 
-                </div>
+                    title="Delete Member"
 
+                >
+
+                    <FiTrash2 />
+
+                </button>
 
             </div>
-
 
         </div>
 

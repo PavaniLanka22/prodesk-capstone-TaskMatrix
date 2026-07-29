@@ -8,8 +8,6 @@ import {
     FiX
 } from "react-icons/fi";
 
-import { toast } from "react-toastify";
-
 function InviteMemberModal({
 
     open,
@@ -76,7 +74,8 @@ function InviteMemberModal({
 
             }
 
-            toast.success("Invitation sent successfully.");
+            // Toast removed from here.
+            // Teams.jsx will show the success message.
 
             setLoading(false);
 
@@ -124,33 +123,30 @@ function InviteMemberModal({
 
                     </div>
 
-                    <div>
+                    <div className="invite-title">
 
-                        <h2>
+    <h2>
 
-                            Invite Team Member
+        Invite Team Member
 
-                        </h2>
+    </h2>
 
-                        <p>
+    <p>
 
-                            Invite people into your workspace and assign roles.
+        Invite people into your workspace and assign roles.
 
-                        </p>
+    </p>
 
-                    </div>
+</div>
 
                     <button
-
-                        className="close-btn"
-
-                        onClick={onClose}
-
-                    >
-
-                        <FiX />
-
-                    </button>
+    type="button"
+    className="close-btn"
+    onClick={onClose}
+    aria-label="Close"
+>
+    <FiX />
+</button>
 
                 </div>
 
@@ -338,13 +334,9 @@ function InviteMemberModal({
 
                                 loading
 
-                                    ?
+                                    ? "Sending..."
 
-                                    "Sending..."
-
-                                    :
-
-                                    "Send Invitation"
+                                    : "Send Invitation"
 
                             }
 

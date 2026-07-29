@@ -4,6 +4,10 @@ const router = express.Router();
 
 const authMiddleware = require("../middleware/authmiddleware");
 
+const validate = require("../middleware/validate");
+
+const taskSchema = require("../validation/taskValidation");
+
 const {
 
     createTask,
@@ -44,6 +48,8 @@ router.post(
 
     authMiddleware,
 
+    validate(taskSchema),
+
     createTask
 
 );
@@ -53,6 +59,8 @@ router.put(
     "/:id",
 
     authMiddleware,
+
+    validate(taskSchema),
 
     updateTask
 

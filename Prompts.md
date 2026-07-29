@@ -44,3 +44,18 @@ After integrating Stripe Checkout, how can I design the frontend flow to handle 
 
 ## Prompt 14 – End-to-End Sprint Validation
 Create a practical testing strategy for a full-stack project management application that has JWT-protected task CRUD, user-specific data access, optimistic deletion, and Stripe test payments. Include API security tests, frontend behavior checks, and a Stripe Checkout test scenario that I can demonstrate before submitting the sprint.
+
+## Prompt 15 – Secure Backend Architecture
+Design a secure REST API architecture for a project management application that supports authentication, project management, task tracking, team collaboration, AI-powered task suggestions, and payment integration. Recommend a scalable folder structure, endpoint organization, and best practices for maintainability.
+
+## Prompt 16 – Validation & Error Handling
+Explain how to implement a robust validation and error handling strategy in an Express.js application using Joi. Include reusable middleware, standardized JSON responses, proper HTTP status codes, and techniques to prevent server crashes.
+
+## Prompt 17 – Server-Side AI Integration
+Describe the best approach for integrating Google's Gemini API into an Express backend. Explain how to securely store API keys, design a dedicated AI endpoint, sanitize responses, and ensure the frontend never directly communicates with the AI provider.
+
+## Prompt 18 – AI Prompt Engineering
+Generate an optimized prompt for an AI assistant that converts a project task into exactly five actionable implementation steps and returns only valid JSON suitable for direct frontend rendering without additional formatting.
+
+## Prompt 19 – Deployment Readiness Review
+Review a MERN application before deployment and identify improvements related to validation, API security, error handling, rate limiting, environment configuration, AI integration, and production readiness. Provide a deployment checklist for hosting the backend on Render and the frontend on Vercel.

@@ -7,6 +7,9 @@ const {
     loginUser
 } = require("../controllers/authController");
 
+const {
+    loginLimiter
+} = require("../middleware/rateLimiter");
 
 router.post(
 
@@ -16,14 +19,14 @@ router.post(
 
 );
 
-
 router.post(
 
     "/login",
 
+    loginLimiter,
+
     loginUser
 
 );
-
 
 module.exports = router;

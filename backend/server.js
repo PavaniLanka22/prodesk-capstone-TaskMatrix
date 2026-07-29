@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Backend health check
 app.get("/", (req, res) => {
@@ -38,7 +40,7 @@ app.get("/", (req, res) => {
     });
 });
 
-// 404 handler
+// 404 Handler
 app.use((req, res) => {
     res.status(404).json({
         success: false,
@@ -48,27 +50,24 @@ app.use((req, res) => {
 
 // Use Render's PORT environment variable.
 // For local development, use PORT from .env.
-// No hardcoded port is required.
 const PORT = process.env.PORT;
 
 const startServer = async () => {
+
     try {
+
         await connectDB();
 
-        app.listen(PORT, () => {
-            console.log(
-                `🚀 TaskMatrix Backend running on port ${PORT}`
-            );
-        });
+        app.listen(PORT);
 
-    } catch (error) {
-        console.error(
-            "❌ Failed to start server:",
-            error.message
-        );
+    }
+
+    catch (error) {
 
         process.exit(1);
+
     }
+
 };
 
 startServer();

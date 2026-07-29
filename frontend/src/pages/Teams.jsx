@@ -26,48 +26,36 @@ import {
 
 import "../styles/teams.css";
 
-
 function Teams() {
 
     // ==================================================
-    // API URL
+    // API
     // ==================================================
 
-    const API_URL =
-        import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
 
-
-    const token =
-        localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
 
     // ==================================================
     // STATE
     // ==================================================
 
-    const [members, setMembers] =
-        useState([]);
+    const [members, setMembers] = useState([]);
 
-    const [loading, setLoading] =
-        useState(true);
+    const [loading, setLoading] = useState(true);
 
-    const [search, setSearch] =
-        useState("");
+    const [search, setSearch] = useState("");
 
-    const [roleFilter, setRoleFilter] =
-        useState("All");
+    const [roleFilter, setRoleFilter] = useState("All");
 
-    const [showInvite, setShowInvite] =
-        useState(false);
+    const [showInvite, setShowInvite] = useState(false);
 
-    const [showEdit, setShowEdit] =
-        useState(false);
+    const [showEdit, setShowEdit] = useState(false);
 
-    const [showDelete, setShowDelete] =
-        useState(false);
+    const [showDelete, setShowDelete] = useState(false);
 
-    const [selectedMember, setSelectedMember] =
-        useState(null);
+    const [selectedMember, setSelectedMember] = useState(null);
 
 
     // ==================================================
@@ -80,44 +68,29 @@ function Teams() {
 
             setLoading(true);
 
+            const response = await axios.get(
 
-            const response =
-                await axios.get(
+                `${API_URL}/api/users`,
 
-                    `${API_URL}/api/users`,
+                {
 
-                    {
+                    headers: {
 
-                        headers: {
+                        Authorization: `Bearer ${token}`,
 
-                            Authorization:
-                                `Bearer ${token}`,
+                    },
 
-                        },
-
-                    }
-
-                );
-
-
-            setMembers(
-
-                response.data.users || []
+                }
 
             );
+
+            setMembers(response.data.users || []);
 
         }
 
         catch (error) {
 
-            console.error(
-
-                "Failed to fetch members:",
-
-                error
-
-            );
-
+            console.error("Failed to fetch members:", error);
 
             toast.error(
 
@@ -139,7 +112,7 @@ function Teams() {
 
 
     // ==================================================
-    // LOAD MEMBERS ON PAGE LOAD
+    // LOAD MEMBERS
     // ==================================================
 
     useEffect(() => {
@@ -155,31 +128,19 @@ function Teams() {
 
     const filteredMembers = useMemo(() => {
 
-        return members.filter(member => {
-
-            const memberName =
-                member.name || "";
-
-            const memberEmail =
-                member.email || "";
-
-
-            const searchValue =
-                search.toLowerCase();
-
+        return members.filter((member) => {
 
             const searchMatch =
 
-                memberName
+                (member.name || "")
                     .toLowerCase()
-                    .includes(searchValue)
+                    .includes(search.toLowerCase())
 
                 ||
 
-                memberEmail
+                (member.email || "")
                     .toLowerCase()
-                    .includes(searchValue);
-
+                    .includes(search.toLowerCase());
 
             const roleMatch =
 
@@ -189,14 +150,7 @@ function Teams() {
 
                     : member.role === roleFilter;
 
-
-            return (
-
-                searchMatch &&
-
-                roleMatch
-
-            );
+            return searchMatch && roleMatch;
 
         });
 
@@ -212,44 +166,38 @@ function Teams() {
 
 
     // ==================================================
-    // STATISTICS
+    // STATS
     // ==================================================
 
-    const admins =
+    const admins = members.filter(
 
-        members.filter(
+        (member) =>
 
-            member =>
+            member.role === "Admin"
 
-                member.role === "Admin"
-
-        ).length;
+    ).length;
 
 
-    const developers =
+    const developers = members.filter(
 
-        members.filter(
+        (member) =>
 
-            member =>
+            member.role === "Developer"
 
-                member.role === "Developer"
-
-        ).length;
+    ).length;
 
 
-    const online =
+    const online = members.filter(
 
-        members.filter(
+        (member) =>
 
-            member =>
+            member.status === "Online"
 
-                member.status === "Online"
-
-        ).length;
+    ).length;
 
 
     // ==================================================
-    // OPEN EDIT
+    // OPEN MODALS
     // ==================================================
 
     const openEditModal = (member) => {
@@ -260,10 +208,6 @@ function Teams() {
 
     };
 
-
-    // ==================================================
-    // OPEN DELETE
-    // ==================================================
 
     const openDeleteModal = (member) => {
 
@@ -276,95 +220,67 @@ function Teams() {
 
     // ==================================================
     // UPDATE MEMBER
-    // THIS NOW SAVES TO MONGODB
+    // ==================================================
+
+        // ==================================================
+    // UPDATE MEMBER
     // ==================================================
 
     const updateMember = async (updatedMember) => {
 
         try {
 
-            const response =
+            const response = await axios.put(
 
-                await axios.put(
+                `${API_URL}/api/users/${updatedMember._id}`,
 
-                    `${API_URL}/api/users/${updatedMember._id}`,
+                {
 
-                    {
+                    name: updatedMember.name,
 
-                        name:
-                            updatedMember.name,
+                    email: updatedMember.email,
 
-                        email:
-                            updatedMember.email,
+                    role: updatedMember.role,
 
-                        role:
-                            updatedMember.role,
+                    department: updatedMember.department,
 
-                        department:
-                            updatedMember.department,
+                    status: updatedMember.status,
 
-                        status:
-                            updatedMember.status,
+                },
+
+                {
+
+                    headers: {
+
+                        Authorization: `Bearer ${token}`,
 
                     },
 
-                    {
-
-                        headers: {
-
-                            Authorization:
-                                `Bearer ${token}`,
-
-                        },
-
-                    }
-
-                );
-
-
-            const savedMember =
-                response.data.user;
-
-
-            // ------------------------------------------
-            // UPDATE REACT STATE WITH DATABASE RESPONSE
-            // ------------------------------------------
-
-            setMembers(
-
-                previousMembers =>
-
-                    previousMembers.map(
-
-                        member =>
-
-                            member._id ===
-                            savedMember._id
-
-                                ? savedMember
-
-                                : member
-
-                    )
+                }
 
             );
 
+            const savedMember = response.data.user;
 
-            toast.success(
+            setMembers(previousMembers =>
 
-                "Member updated successfully."
+                previousMembers.map(member =>
+
+                    member._id === savedMember._id
+
+                        ? savedMember
+
+                        : member
+
+                )
 
             );
 
-
-            // ------------------------------------------
-            // CLOSE MODAL
-            // ------------------------------------------
+            toast.success("Member updated successfully.");
 
             setShowEdit(false);
 
             setSelectedMember(null);
-
 
         }
 
@@ -377,7 +293,6 @@ function Teams() {
                 error
 
             );
-
 
             toast.error(
 
@@ -404,7 +319,6 @@ function Teams() {
 
         }
 
-
         try {
 
             await axios.delete(
@@ -415,8 +329,7 @@ function Teams() {
 
                     headers: {
 
-                        Authorization:
-                            `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
 
                     },
 
@@ -424,34 +337,23 @@ function Teams() {
 
             );
 
+            setMembers(previousMembers =>
 
-            setMembers(
+                previousMembers.filter(
 
-                previousMembers =>
+                    member =>
 
-                    previousMembers.filter(
+                        member._id !== selectedMember._id
 
-                        member =>
-
-                            member._id !==
-                            selectedMember._id
-
-                    )
+                )
 
             );
 
-
-            toast.success(
-
-                "Member removed successfully."
-
-            );
-
+            toast.success("Member removed successfully.");
 
             setShowDelete(false);
 
             setSelectedMember(null);
-
 
         }
 
@@ -464,7 +366,6 @@ function Teams() {
                 error
 
             );
-
 
             toast.error(
 
@@ -483,37 +384,82 @@ function Teams() {
     // INVITE MEMBER
     // ==================================================
 
-    const inviteMember = (member) => {
+    const inviteMember = async (member) => {
 
-        setMembers(
+        try {
 
-            previousMembers => [
+            const response = await axios.post(
 
-                ...previousMembers,
+                `${API_URL}/api/users`,
 
                 {
 
-                    ...member,
+                    name: member.name,
 
-                    _id: Date.now(),
+                    email: member.email,
+
+                    role: member.role,
+
+                    department: member.department,
+
+                    status: member.status,
 
                 },
 
-            ]
+                {
 
-        );
+                    headers: {
 
+                        Authorization: `Bearer ${token}`,
 
-        toast.success(
+                    },
 
-            "Member invited successfully."
+                }
 
-        );
+            );
+
+            const savedMember = response.data.user;
+
+            setMembers(previousMembers => [
+
+                savedMember,
+
+                ...previousMembers,
+
+            ]);
+
+            toast.success("Member invited successfully.");
+
+        }
+
+        catch (error) {
+
+            console.error(
+
+                "Failed to invite member:",
+
+                error
+
+            );
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Failed to invite member."
+
+            );
+
+        }
 
     };
 
 
     // ==================================================
+    // RENDER
+    // ==================================================
+
+        // ==================================================
     // RENDER
     // ==================================================
 
@@ -523,14 +469,11 @@ function Teams() {
 
             <Sidebar />
 
-
             <div className="main-content">
 
                 <Navbar />
 
-
                 <div className="teams-page">
-
 
                     {/* HEADER */}
 
@@ -544,7 +487,6 @@ function Teams() {
 
                             </h1>
 
-
                             <p>
 
                                 Manage your workspace members, roles and collaboration.
@@ -553,13 +495,14 @@ function Teams() {
 
                         </div>
 
-
                         <button
 
                             className="new-member-btn"
 
                             onClick={() =>
+
                                 setShowInvite(true)
+
                             }
 
                         >
@@ -571,10 +514,9 @@ function Teams() {
                     </div>
 
 
-                    {/* STATISTICS */}
+                    {/* STATS */}
 
                     <div className="team-stats">
-
 
                         <div className="team-stat-card">
 
@@ -582,23 +524,13 @@ function Teams() {
 
                             <div>
 
-                                <h4>
+                                <h4>Total Members</h4>
 
-                                    Total Members
-
-                                </h4>
-
-
-                                <h2>
-
-                                    {members.length}
-
-                                </h2>
+                                <h2>{members.length}</h2>
 
                             </div>
 
                         </div>
-
 
                         <div className="team-stat-card">
 
@@ -606,23 +538,13 @@ function Teams() {
 
                             <div>
 
-                                <h4>
+                                <h4>Administrators</h4>
 
-                                    Administrators
-
-                                </h4>
-
-
-                                <h2>
-
-                                    {admins}
-
-                                </h2>
+                                <h2>{admins}</h2>
 
                             </div>
 
                         </div>
-
 
                         <div className="team-stat-card">
 
@@ -630,23 +552,13 @@ function Teams() {
 
                             <div>
 
-                                <h4>
+                                <h4>Developers</h4>
 
-                                    Developers
-
-                                </h4>
-
-
-                                <h2>
-
-                                    {developers}
-
-                                </h2>
+                                <h2>{developers}</h2>
 
                             </div>
 
                         </div>
-
 
                         <div className="team-stat-card">
 
@@ -654,23 +566,13 @@ function Teams() {
 
                             <div>
 
-                                <h4>
+                                <h4>Active Today</h4>
 
-                                    Active Today
-
-                                </h4>
-
-
-                                <h2>
-
-                                    {online}
-
-                                </h2>
+                                <h2>{online}</h2>
 
                             </div>
 
                         </div>
-
 
                     </div>
 
@@ -679,11 +581,9 @@ function Teams() {
 
                     <div className="team-toolbar">
 
-
                         <div className="search-box">
 
                             <FiSearch />
-
 
                             <input
 
@@ -694,15 +594,14 @@ function Teams() {
                                 value={search}
 
                                 onChange={(e) =>
-                                    setSearch(
-                                        e.target.value
-                                    )
+
+                                    setSearch(e.target.value)
+
                                 }
 
                             />
 
                         </div>
-
 
                         <select
 
@@ -711,48 +610,24 @@ function Teams() {
                             value={roleFilter}
 
                             onChange={(e) =>
-                                setRoleFilter(
-                                    e.target.value
-                                )
+
+                                setRoleFilter(e.target.value)
+
                             }
 
                         >
 
-                            <option value="All">
+                            <option value="All">All Roles</option>
 
-                                All Roles
+                            <option value="Admin">Admin</option>
 
-                            </option>
+                            <option value="Manager">Manager</option>
 
-                            <option value="Admin">
+                            <option value="Developer">Developer</option>
 
-                                Admin
+                            <option value="Tester">Tester</option>
 
-                            </option>
-
-                            <option value="Manager">
-
-                                Manager
-
-                            </option>
-
-                            <option value="Developer">
-
-                                Developer
-
-                            </option>
-
-                            <option value="Tester">
-
-                                Tester
-
-                            </option>
-
-                            <option value="Viewer">
-
-                                Viewer
-
-                            </option>
+                            <option value="Viewer">Viewer</option>
 
                         </select>
 
@@ -793,13 +668,11 @@ function Teams() {
 
                                         </div>
 
-
                                         <h2>
 
                                             No Members Found
 
                                         </h2>
-
 
                                         <p>
 
@@ -815,45 +688,57 @@ function Teams() {
 
                                 (
 
-                                    <div className="member-grid">
+                                    <>
 
-                                        {
+                                        <div className="member-table-header">
 
-                                            filteredMembers.map(
+                                            <div>Member</div>
 
-                                                member => (
+                                            <div>Email</div>
+
+                                            <div>Role</div>
+
+                                            <div>Status</div>
+
+                                            <div>Workspace</div>
+
+                                            <div>Actions</div>
+
+                                        </div>
+
+                                        <div className="member-grid">
+
+                                            {
+
+                                                filteredMembers.map((member) => (
 
                                                     <MemberCard
 
-                                                        key={
-                                                            member._id
-                                                        }
+                                                        key={member._id}
 
-                                                        member={
-                                                            member
-                                                        }
+                                                        member={member}
 
                                                         onEdit={() =>
-                                                            openEditModal(
-                                                                member
-                                                            )
+
+                                                            openEditModal(member)
+
                                                         }
 
                                                         onDelete={() =>
-                                                            openDeleteModal(
-                                                                member
-                                                            )
+
+                                                            openDeleteModal(member)
+
                                                         }
 
                                                     />
 
-                                                )
+                                                ))
 
-                                            )
+                                            }
 
-                                        }
+                                        </div>
 
-                                    </div>
+                                    </>
 
                                 )
 
@@ -871,16 +756,12 @@ function Teams() {
                 open={showInvite}
 
                 onClose={() =>
+
                     setShowInvite(false)
+
                 }
 
-                onInvite={(member) => {
-
-                    inviteMember(member);
-
-                    setShowInvite(false);
-
-                }}
+                onInvite={inviteMember}
 
             />
 
@@ -926,12 +807,10 @@ function Teams() {
 
             />
 
-
         </div>
 
     );
 
 }
-
 
 export default Teams;
