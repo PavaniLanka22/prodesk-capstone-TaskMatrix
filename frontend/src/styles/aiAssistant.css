@@ -1,0 +1,347 @@
+.ai-card {
+    margin-top: 30px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    border-radius: 22px;
+    border: 1px solid #e8edf7;
+    box-shadow: 0 15px 40px rgba(20, 40, 80, 0.08);
+    overflow: hidden;
+}
+
+.ai-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: white;
+}
+
+.ai-title {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.ai-title svg {
+    font-size: 42px;
+    flex-shrink: 0;
+}
+
+.ai-title h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.ai-title p {
+    margin-top: 6px;
+    opacity: .92;
+    font-size: 14px;
+}
+
+.ai-badge {
+    font-size: 34px;
+    animation: pulseAI 2s infinite;
+}
+
+@keyframes pulseAI {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+.ai-textarea {
+
+    width: calc(100% - 56px);
+
+    margin: 28px;
+
+    min-height: 140px;
+
+    resize: vertical;
+
+    border-radius: 16px;
+
+    border: 1px solid #d9e2ef;
+
+    padding: 18px;
+
+    outline: none;
+
+    font-size: 15px;
+
+    font-family: inherit;
+
+    transition: .25s;
+
+    background: white;
+
+    box-sizing: border-box;
+
+}
+
+.ai-textarea:focus {
+
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+
+}
+
+.ai-buttons {
+
+    display: flex;
+
+    gap: 14px;
+
+    flex-wrap: wrap;
+
+    padding: 0 28px 28px;
+
+}
+
+.generate-btn,
+.copy-btn,
+.clear-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border: none;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+    font-weight: 600;
+
+    border-radius: 12px;
+
+    padding: 13px 20px;
+
+    font-size: 15px;
+
+}
+
+.generate-btn {
+
+    background: linear-gradient(135deg,#2563eb,#4f46e5);
+
+    color: white;
+
+    box-shadow: 0 10px 25px rgba(79,70,229,.25);
+
+}
+
+.generate-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 14px 30px rgba(79,70,229,.35);
+
+}
+
+.generate-btn:disabled {
+
+    opacity: .75;
+
+    cursor: not-allowed;
+
+}
+
+.copy-btn {
+
+    background: white;
+
+    border: 1px solid #dbe4f2;
+
+    color: #334155;
+
+}
+
+.copy-btn:hover {
+
+    background: #f5f8fc;
+
+}
+
+.clear-btn {
+
+    background: #fff1f2;
+
+    color: #dc2626;
+
+    border: 1px solid #fecdd3;
+
+}
+
+.clear-btn:hover {
+
+    background: #ffe4e6;
+
+}
+
+.ai-results {
+
+    padding: 0 28px 30px;
+
+}
+
+.ai-results h3 {
+
+    margin-bottom: 18px;
+
+    color: #1f2937;
+
+    font-size: 19px;
+
+}
+
+.ai-step {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 18px;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    border-radius: 16px;
+
+    background: #f8fbff;
+
+    border-left: 5px solid #2563eb;
+
+    transition: .25s;
+
+}
+
+.ai-step:hover {
+
+    transform: translateX(4px);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,.05);
+
+}
+
+.ai-step span {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg,#2563eb,#4f46e5);
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 700;
+
+    flex-shrink: 0;
+
+}
+
+.ai-step p {
+
+    margin: 0;
+
+    color: #334155;
+
+    line-height: 1.7;
+
+}
+
+.spin {
+
+    animation: spin .9s linear infinite;
+
+}
+
+@keyframes spin {
+
+    from {
+
+        transform: rotate(0deg);
+
+    }
+
+    to {
+
+        transform: rotate(360deg);
+
+    }
+
+}
+
+@media (max-width:768px) {
+
+    .ai-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 18px;
+
+    }
+
+    .ai-title {
+
+        align-items: flex-start;
+
+    }
+
+    .ai-buttons {
+
+        flex-direction: column;
+
+    }
+
+    .generate-btn,
+    .copy-btn,
+    .clear-btn {
+
+        width: 100%;
+
+        justify-content: center;
+
+    }
+
+    .ai-textarea {
+
+        width: calc(100% - 32px);
+
+        margin: 16px;
+
+    }
+
+    .ai-results {
+
+        padding: 0 16px 24px;
+
+    }
+
+}

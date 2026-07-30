@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 
 import { FiSearch } from "react-icons/fi";
+import AIWorkspace from "../components/AIWorkspace";
 
 import {
     MdOutlineTaskAlt
@@ -239,7 +240,7 @@ function Tasks() {
 
                     </div>
 
-
+<AIWorkspace />
                     <div className="stats-grid">
 
                         <div className="stats-card">
