@@ -5,10 +5,10 @@ import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
+import DeleteMemberModal from "../components/DeleteMemberModal";
+import EditMemberModal from "../components/EditMemberModal";
 import InviteMemberModal from "../components/InviteMemberModal";
 import MemberCard from "../components/MemberCard";
-import EditMemberModal from "../components/EditMemberModal";
-import DeleteMemberModal from "../components/DeleteMemberModal";
 
 import {
     FiSearch,
@@ -25,6 +25,29 @@ import {
 } from "react-icons/md";
 
 import "../styles/teams.css";
+
+
+// ==================================================
+// API ERROR HANDLER
+// ==================================================
+
+const getErrorMessage = (error, fallback) => {
+
+    if (!error.response) {
+
+        return "Network error. Please check your internet connection.";
+
+    }
+
+    if (error.response.status >= 500) {
+
+        return "Server error. Please try again later.";
+
+    }
+
+    return error.response?.data?.message || fallback;
+
+};
 
 function Teams() {
 
@@ -94,11 +117,12 @@ function Teams() {
 
             toast.error(
 
-                error.response?.data?.message ||
+    getErrorMessage(
+        error,
+        "Failed to load team members."
+    )
 
-                "Failed to load team members."
-
-            );
+);
 
         }
 
@@ -222,10 +246,6 @@ function Teams() {
     // UPDATE MEMBER
     // ==================================================
 
-        // ==================================================
-    // UPDATE MEMBER
-    // ==================================================
-
     const updateMember = async (updatedMember) => {
 
         try {
@@ -296,11 +316,12 @@ function Teams() {
 
             toast.error(
 
-                error.response?.data?.message ||
+    getErrorMessage(
+        error,
+        "Failed to update member."
+    )
 
-                "Failed to update member."
-
-            );
+);
 
         }
 
@@ -369,11 +390,12 @@ function Teams() {
 
             toast.error(
 
-                error.response?.data?.message ||
+    getErrorMessage(
+        error,
+        "Failed to delete member."
+    )
 
-                "Failed to delete member."
-
-            );
+);
 
         }
 
@@ -442,24 +464,20 @@ function Teams() {
 
             );
 
-            toast.error(
+           toast.error(
 
-                error.response?.data?.message ||
+    getErrorMessage(
+        error,
+        "Failed to invite member."
+    )
 
-                "Failed to invite member."
-
-            );
+);
 
         }
 
     };
 
-
     // ==================================================
-    // RENDER
-    // ==================================================
-
-        // ==================================================
     // RENDER
     // ==================================================
 
@@ -481,38 +499,22 @@ function Teams() {
 
                         <div>
 
-                            <h1>
-
-                                Team Management
-
-                            </h1>
+                            <h1>Team Management</h1>
 
                             <p>
-
                                 Manage your workspace members, roles and collaboration.
-
                             </p>
 
                         </div>
 
                         <button
-
                             className="new-member-btn"
-
-                            onClick={() =>
-
-                                setShowInvite(true)
-
-                            }
-
+                            onClick={() => setShowInvite(true)}
                         >
-
                             + Invite Member
-
                         </button>
 
                     </div>
-
 
                     {/* STATS */}
 
@@ -576,7 +578,6 @@ function Teams() {
 
                     </div>
 
-
                     {/* TOOLBAR */}
 
                     <div className="team-toolbar">
@@ -586,161 +587,110 @@ function Teams() {
                             <FiSearch />
 
                             <input
-
                                 type="text"
-
                                 placeholder="Search by name or email..."
-
                                 value={search}
-
-                                onChange={(e) =>
-
-                                    setSearch(e.target.value)
-
-                                }
-
+                                onChange={(e) => setSearch(e.target.value)}
                             />
 
                         </div>
 
                         <select
-
                             className="toolbar-select"
-
                             value={roleFilter}
-
-                            onChange={(e) =>
-
-                                setRoleFilter(e.target.value)
-
-                            }
-
+                            onChange={(e) => setRoleFilter(e.target.value)}
                         >
 
                             <option value="All">All Roles</option>
-
                             <option value="Admin">Admin</option>
-
                             <option value="Manager">Manager</option>
-
                             <option value="Developer">Developer</option>
-
                             <option value="Tester">Tester</option>
-
                             <option value="Viewer">Viewer</option>
 
                         </select>
 
                     </div>
 
-
                     {/* MEMBERS */}
 
                     {
 
-                        loading
+                        loading ? (
 
-                            ?
+                            <div className="loading-state">
 
-                            (
+                                Loading Members...
 
-                                <div className="loading-state">
+                            </div>
 
-                                    Loading Members...
+                        ) : filteredMembers.length === 0 ? (
+
+                            <div className="team-empty">
+
+                                <div className="team-empty-icon">
+
+                                    👥
 
                                 </div>
 
-                            )
+                                <h2>No Members Found</h2>
 
-                            :
+                                <p>
 
-                            filteredMembers.length === 0
+                                    Try changing your search or invite a new member.
 
-                                ?
+                                </p>
 
-                                (
+                            </div>
 
-                                    <div className="team-empty">
+                        ) : (
 
-                                        <div className="team-empty-icon">
+                            <>
 
-                                            👥
+                                <div className="member-table-header">
 
-                                        </div>
+                                    <div>Member</div>
 
-                                        <h2>
+                                    <div>Email</div>
 
-                                            No Members Found
+                                    <div>Role</div>
 
-                                        </h2>
+                                    <div>Status</div>
 
-                                        <p>
+                                    <div>Workspace</div>
 
-                                            Try changing your search or invite a new member.
+                                    <div>Actions</div>
 
-                                        </p>
+                                </div>
 
-                                    </div>
+                                <div className="member-grid">
 
-                                )
+                                    {
 
-                                :
+                                        filteredMembers.map((member) => (
 
-                                (
+                                            <MemberCard
 
-                                    <>
+                                                key={member._id}
 
-                                        <div className="member-table-header">
+                                                member={member}
 
-                                            <div>Member</div>
+                                                onEdit={() => openEditModal(member)}
 
-                                            <div>Email</div>
+                                                onDelete={() => openDeleteModal(member)}
 
-                                            <div>Role</div>
+                                            />
 
-                                            <div>Status</div>
+                                        ))
 
-                                            <div>Workspace</div>
+                                    }
 
-                                            <div>Actions</div>
+                                </div>
 
-                                        </div>
+                            </>
 
-                                        <div className="member-grid">
-
-                                            {
-
-                                                filteredMembers.map((member) => (
-
-                                                    <MemberCard
-
-                                                        key={member._id}
-
-                                                        member={member}
-
-                                                        onEdit={() =>
-
-                                                            openEditModal(member)
-
-                                                        }
-
-                                                        onDelete={() =>
-
-                                                            openDeleteModal(member)
-
-                                                        }
-
-                                                    />
-
-                                                ))
-
-                                            }
-
-                                        </div>
-
-                                    </>
-
-                                )
+                        )
 
                     }
 
@@ -748,23 +698,17 @@ function Teams() {
 
             </div>
 
-
             {/* INVITE */}
 
             <InviteMemberModal
 
                 open={showInvite}
 
-                onClose={() =>
-
-                    setShowInvite(false)
-
-                }
+                onClose={() => setShowInvite(false)}
 
                 onInvite={inviteMember}
 
             />
-
 
             {/* EDIT */}
 
@@ -785,7 +729,6 @@ function Teams() {
                 onSave={updateMember}
 
             />
-
 
             {/* DELETE */}
 
