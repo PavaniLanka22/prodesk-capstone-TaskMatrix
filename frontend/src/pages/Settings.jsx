@@ -23,6 +23,8 @@ function Settings() {
 
     const [activeTab, setActiveTab] = useState("profile");
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
     const tabs = [
 
         {
@@ -57,143 +59,126 @@ function Settings() {
 
     ];
 
-    return (
+return (
 
-<div className="dashboard-container">
+    <div className="dashboard-container">
 
-<Sidebar/>
+        <Sidebar
+            isOpen={sidebarOpen}
+            closeSidebar={() => setSidebarOpen(false)}
+        />
 
-<div className="main-content">
+        <div className="main-content">
 
-<Navbar/>
+            <Navbar
+                toggleSidebar={() =>
+                    setSidebarOpen(!sidebarOpen)
+                }
+            />
 
-<div className="settings-page">
+            <div className="settings-page">
 
-<div className="settings-header">
+                <div className="settings-header">
 
-<h1>
+                    <h1>
+                        Settings
+                    </h1>
 
-Settings
+                    <p>
+                        Manage your account and workspace preferences.
+                    </p>
 
-</h1>
+                </div>
 
-<p>
+                <div className="settings-layout">
 
-Manage your account and workspace preferences.
+                    <div className="settings-sidebar">
 
-</p>
+                        {
 
-</div>
+                            tabs.map(tab => (
 
-<div className="settings-layout">
+                                <button
 
-<div className="settings-sidebar">
+                                    key={tab.id}
 
-{
+                                    className={
+                                        activeTab === tab.id
+                                            ? "settings-tab active"
+                                            : "settings-tab"
+                                    }
 
-tabs.map(tab=>(
+                                    onClick={() =>
+                                        setActiveTab(tab.id)
+                                    }
 
-<button
+                                >
 
-key={tab.id}
+                                    <span>
+                                        {tab.icon}
+                                    </span>
 
-className={
+                                    {tab.title}
 
-activeTab===tab.id
+                                </button>
 
-?
+                            ))
 
-"settings-tab active"
+                        }
 
-:
+                    </div>
 
-"settings-tab"
+                    <div className="settings-content">
 
-}
+                        {
 
-onClick={()=>setActiveTab(tab.id)}
+                            activeTab === "profile" &&
 
->
+                            <ProfileSettings />
 
-<span>
+                        }
 
-{tab.icon}
+                        {
 
-</span>
+                            activeTab === "workspace" &&
 
-{tab.title}
+                            <WorkspaceSettings />
 
-</button>
+                        }
 
-))
+                        {
 
-}
+                            activeTab === "appearance" &&
 
-</div>
+                            <AppearanceSettings />
 
-<div className="settings-content">
+                        }
 
+                        {
 
-    
-{
+                            activeTab === "notifications" &&
 
-activeTab==="profile"
+                            <NotificationSettings />
 
-&&
+                        }
 
-<ProfileSettings/>
+                        {
 
-}
+                            activeTab === "security" &&
 
-{
+                            <SecuritySettings />
 
-activeTab==="workspace"
+                        }
 
-&&
+                    </div>
 
-<WorkspaceSettings/>
+                </div>
 
-}
+            </div>
 
-{
+        </div>
 
-activeTab==="appearance"
-
-&&
-
-<AppearanceSettings/>
-
-}
-
-{
-
-activeTab==="notifications"
-
-&&
-
-<NotificationSettings/>
-
-}
-
-{
-
-activeTab==="security"
-
-&&
-
-<SecuritySettings/>
-
-}
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+    </div>
 
 );
 

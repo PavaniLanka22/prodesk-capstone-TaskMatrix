@@ -27,6 +27,8 @@ import "../styles/tasks.css";
 
 function Tasks() {
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
     const token = localStorage.getItem("token");
 
     const [tasks, setTasks] = useState([]);
@@ -196,12 +198,17 @@ function Tasks() {
 
         <div className="dashboard-container">
 
-            <Sidebar />
-
+              <Sidebar
+    isOpen={sidebarOpen}
+    closeSidebar={() => setSidebarOpen(false)}
+/>
             <div className="main-content">
 
-                <Navbar />
-
+<Navbar
+    toggleSidebar={() =>
+        setSidebarOpen(!sidebarOpen)
+    }
+/>
                 <div className="tasks-page">
 
                     <div className="page-header">

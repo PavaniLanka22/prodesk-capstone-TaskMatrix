@@ -3,12 +3,12 @@ import { toast } from "react-toastify";
 
 import api from "../services/api";
 
+import MainLayout from "../layouts/MainLayout";
+
 import CreateProjectModal from "../components/CreateProjectModal";
 import DeleteProjectModal from "../components/DeleteProjectModal";
 import EditProjectModal from "../components/EditProjectModal";
-import Navbar from "../components/Navbar";
 import ProjectCard from "../components/ProjectCard";
-import Sidebar from "../components/Sidebar";
 
 import "../styles/dashboard.css";
 
@@ -25,7 +25,6 @@ function Projects() {
     const [selectedProject, setSelectedProject] = useState(null);
 
     const [loading, setLoading] = useState(true);
-
 
     const fetchProjects = async () => {
 
@@ -63,13 +62,11 @@ function Projects() {
 
     };
 
-
     useEffect(() => {
 
         fetchProjects();
 
     }, []);
-
 
     const handleProjectCreated = (newProject) => {
 
@@ -82,7 +79,6 @@ function Projects() {
         ]);
 
     };
-
 
     const handleProjectUpdated = (updatedProject) => {
 
@@ -102,7 +98,6 @@ function Projects() {
 
     };
 
-
     const deleteProject = async () => {
 
         if (!selectedProject) return;
@@ -110,15 +105,11 @@ function Projects() {
         try {
 
             await api.delete(
-
                 `/projects/${selectedProject._id}`
-
             );
-
 
             const deletedProjectName =
                 selectedProject.name;
-
 
             setProjects((prevProjects) =>
 
@@ -133,16 +124,12 @@ function Projects() {
 
             );
 
-
             setDeleteModal(false);
 
             setSelectedProject(null);
 
-
             toast.success(
-
                 `"${deletedProjectName}" deleted successfully!`
-
             );
 
         }
@@ -150,196 +137,162 @@ function Projects() {
         catch (error) {
 
             console.error(
-
                 "Failed to delete project:",
-
                 error
-
             );
 
             toast.error(
-
                 error.response?.data?.message ||
-
                 "Failed to delete project."
-
             );
 
         }
 
     };
 
-
     return (
 
-        <div className="dashboard-container">
+        <MainLayout>
 
-            <Sidebar />
+            <div className="page-header">
 
+                <div>
 
-            <div className="main-content">
+                    <h1>Projects</h1>
 
-                <Navbar />
+                    <p>
 
+                        Manage all your projects in one place.
 
-                <div className="page-header">
-
-                    <div>
-
-                        <h1>Projects</h1>
-
-                        <p>
-
-                            Manage all your projects in one place.
-
-                        </p>
-
-                    </div>
-
-
-                    <button
-
-                        className="new-project"
-
-                        onClick={() =>
-                            setShowModal(true)
-                        }
-
-                    >
-
-                        + Create Project
-
-                    </button>
+                    </p>
 
                 </div>
 
+                <button
 
-                {
+                    className="new-project"
 
-                    loading
+                    onClick={() =>
+                        setShowModal(true)
+                    }
 
-                        ?
+                >
 
-                        (
+                    + Create Project
 
-                            <div className="loading-state">
+                </button>
 
-                                Loading Projects...
+            </div>
 
-                            </div>
+            {
 
-                        )
+                loading
 
-                        :
+                    ?
 
-                        (
+                    (
 
-                            <div className="projects-grid">
+                        <div className="loading-state">
 
-                                {
+                            Loading Projects...
 
-                                    projects.length === 0
+                        </div>
 
-                                        ?
+                    )
 
-                                        (
+                    :
 
-                                            <p>
+                    (
 
-                                                No projects found.
+                        <div className="projects-grid">
 
-                                                Create your first project.
+                            {
 
-                                            </p>
+                                projects.length === 0
 
-                                        )
+                                    ?
 
-                                        :
+                                    (
 
-                                        (
+                                        <p>
 
-                                            projects.map(
+                                            No projects found.
 
-                                                (project) => (
+                                            Create your first project.
 
-                                                    <ProjectCard
+                                        </p>
 
-                                                        key={
-                                                            project._id
-                                                        }
+                                    )
 
-                                                        id={
-                                                            project._id
-                                                        }
+                                    :
 
-                                                        title={
-                                                            project.name
-                                                        }
+                                    (
 
-                                                        category={
-                                                            project.category
-                                                        }
+                                        projects.map(
 
-                                                        progress={
-                                                            project.progress ||
-                                                            0
-                                                        }
+                                            (project) => (
 
-                                                        tasks={
-                                                            project.tasks?.length ||
-                                                            0
-                                                        }
+                                                <ProjectCard
 
-                                                        members={
+                                                    key={
+                                                        project._id
+                                                    }
 
-                                                            project.members?.length ||
+                                                    id={
+                                                        project._id
+                                                    }
 
-                                                            1
+                                                    title={
+                                                        project.name
+                                                    }
 
-                                                        }
+                                                    category={
+                                                        project.category
+                                                    }
 
-                                                        onEdit={() => {
+                                                    progress={
+                                                        project.progress || 0
+                                                    }
 
-                                                            setSelectedProject(
-                                                                project
-                                                            );
+                                                    tasks={
+                                                        project.tasks?.length || 0
+                                                    }
 
-                                                            setEditModal(
-                                                                true
-                                                            );
+                                                    members={
+                                                        project.members?.length || 1
+                                                    }
 
-                                                        }}
+                                                    onEdit={() => {
 
-                                                        onDelete={() => {
+                                                        setSelectedProject(project);
 
-                                                            setSelectedProject(
-                                                                project
-                                                            );
+                                                        setEditModal(true);
 
-                                                            setDeleteModal(
-                                                                true
-                                                            );
+                                                    }}
 
-                                                        }}
+                                                    onDelete={() => {
 
-                                                    />
+                                                        setSelectedProject(project);
 
-                                                )
+                                                        setDeleteModal(true);
+
+                                                    }}
+
+                                                />
 
                                             )
 
                                         )
 
-                                }
+                                    )
 
-                            </div>
+                            }
 
-                        )
+                        </div>
 
-                }
+                    )
 
-            </div>
-
+            }
 
             <CreateProjectModal
 
@@ -354,7 +307,6 @@ function Projects() {
                 }
 
             />
-
 
             <EditProjectModal
 
@@ -375,7 +327,6 @@ function Projects() {
                 }
 
             />
-
 
             <DeleteProjectModal
 
@@ -399,11 +350,10 @@ function Projects() {
 
             />
 
-        </div>
+        </MainLayout>
 
     );
 
 }
-
 
 export default Projects;

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 
-function Sidebar() {
+function Sidebar({ isOpen, closeSidebar }) {
 
     const location = useLocation();
 
@@ -45,58 +45,65 @@ function Sidebar() {
     ];
 
     return (
+        <>
 
-        <aside className="sidebar">
-
-            <div className="sidebar-logo">
-
-                <img
-                    src="/kanban.svg"
-                    alt="TaskMatrix"
+            {isOpen && (
+                <div
+                    className="sidebar-overlay"
+                    onClick={closeSidebar}
                 />
+            )}
 
-                <h2>TaskMatrix</h2>
+            <aside className={`sidebar ${isOpen ? "open" : ""}`}>
 
-            </div>
+                <div className="sidebar-logo">
 
-            <nav>
+                    <img
+                        src="/kanban.svg"
+                        alt="TaskMatrix"
+                    />
 
-                {
+                    <h2>TaskMatrix</h2>
 
-                    menuItems.map((item) => (
+                </div>
 
-                        <Link
+                <nav>
 
-                            key={item.name}
+                    {
 
-                            to={item.path}
+                        menuItems.map((item) => (
 
-                            className={
+                            <Link
 
-                                location.pathname === item.path
+                                key={item.name}
 
-                                    ? "menu active"
+                                to={item.path}
 
-                                    : "menu"
+                                onClick={closeSidebar}
 
-                            }
+                                className={
+                                    location.pathname === item.path
+                                        ? "menu active"
+                                        : "menu"
+                                }
 
-                        >
+                            >
 
-                            <span>{item.icon}</span>
+                                <span>{item.icon}</span>
 
-                            {item.name}
+                                {item.name}
 
-                        </Link>
+                            </Link>
 
-                    ))
+                        ))
 
-                }
+                    }
 
-            </nav>
+                </nav>
 
-        </aside>
+            </aside>
 
+        </>
     );
 
 }

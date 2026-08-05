@@ -59,6 +59,8 @@ function Teams() {
 
     const token = localStorage.getItem("token");
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
 
     // ==================================================
     // STATE
@@ -481,17 +483,24 @@ function Teams() {
     // RENDER
     // ==================================================
 
-    return (
+   return (
 
-        <div className="dashboard-container">
+    <div className="dashboard-container">
 
-            <Sidebar />
+        <Sidebar
+            isOpen={sidebarOpen}
+            closeSidebar={() => setSidebarOpen(false)}
+        />
 
-            <div className="main-content">
+        <div className="main-content">
 
-                <Navbar />
+            <Navbar
+                toggleSidebar={() =>
+                    setSidebarOpen(!sidebarOpen)
+                }
+            />
 
-                <div className="teams-page">
+            <div className="teams-page">
 
                     {/* HEADER */}
 

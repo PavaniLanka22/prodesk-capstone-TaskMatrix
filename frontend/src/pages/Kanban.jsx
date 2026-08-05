@@ -25,6 +25,8 @@ function Kanban() {
 
     const token = localStorage.getItem("token");
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
     const [tasks, setTasks] = useState([]);
 
     const [loading, setLoading] = useState(true);
@@ -54,8 +56,7 @@ function Kanban() {
             setLoading(true);
 
             const response = await axios.get(
-
-                "https://prodesk-capstone-taskmatrix-9row.onrender.com/api/tasks",
+    `${import.meta.env.VITE_API_URL}/api/tasks`,
 
                 {
 
@@ -205,13 +206,20 @@ function Kanban() {
 
     return (
 
-        <div className="dashboard-container">
+       <div className="dashboard-container">
 
-            <Sidebar />
+    <Sidebar
+        isOpen={sidebarOpen}
+        closeSidebar={() => setSidebarOpen(false)}
+    />
 
-            <div className="main-content">
+    <div className="main-content">
 
-                <Navbar />
+        <Navbar
+            toggleSidebar={() =>
+                setSidebarOpen(!sidebarOpen)
+            }
+        />
 
                 <div className="kanban-page">
 
