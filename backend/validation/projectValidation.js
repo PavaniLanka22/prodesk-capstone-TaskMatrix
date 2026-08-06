@@ -10,7 +10,8 @@ const projectSchema = Joi.object({
 
     description: Joi.string()
         .allow("")
-        .max(500),
+        .max(500)
+        .default(""),
 
     category: Joi.string()
         .valid(
@@ -19,21 +20,24 @@ const projectSchema = Joi.object({
             "Full Stack",
             "Mobile"
         )
-        .required(),
+        .default("Full Stack"),
 
     dueDate: Joi.date()
-        .required(),
+        .allow(null, "")
+        .optional(),
 
     progress: Joi.number()
         .min(0)
-        .max(100),
+        .max(100)
+        .default(0),
 
     status: Joi.string()
         .valid(
             "Active",
             "Completed"
         )
-        .required()
+        .default("Active")
+        .optional()
 
 });
 
